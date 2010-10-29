@@ -117,8 +117,10 @@ class User(object):
     def get_name(self):
         return self.name
     
-    def send_frame(self, name, args={}, omit=None):
-        for conn in self.connections:
+    def send_frame(self, name, args={}, omit=None, channel=None):
+        if channel and channel not in self.channels:
+            return
+        for conn in (self.channels[channel] if channel else self.connections):
             if conn is not omit:
                 conn.send_frame(name, args)
 

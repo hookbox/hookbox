@@ -176,7 +176,7 @@ class Channel(object):
         if not self.reflective:
             omit = conn
         for subscriber in self.subscribers:
-            subscriber.send_frame('PUBLISH', frame, omit=omit)
+            subscriber.send_frame('PUBLISH', frame, omit=omit, channel=self)
         self.server.admin.channel_event('publish', self.name, frame)
         if self.history_size:
             del frame['channel_name']
@@ -203,7 +203,7 @@ class Channel(object):
             
         if has_initial_data or self.history:
             frame = dict(channel_name=self.name, history=self.history, initial_data=initial_data)
-            user.send_frame('CHANNEL_INIT', frame)
+            user.send_frame('CHANNEL_INIT', frame, channel=self)
 
         self.subscribers.append(user)
         user.channel_subscribed(self, conn=conn)
@@ -213,11 +213,11 @@ class Channel(object):
         if self.presenceful:
             for subscriber in self.subscribers:
                 if subscriber == user: continue
-                subscriber.send_frame('SUBSCRIBE', frame)
+                subscriber.send_frame('SUBSCRIBE', frame, channel=self)
                 
         frame = self._build_subscribe_frame(user, initial_data)
         
-        user.send_frame('SUBSCRIBE', frame)
+        user.send_frame('SUBSCRIBE', frame, channel=self)
             
         if self.history_size:
             self.history.append(('SUBSCRIBE', {"user": user.get_name(), "datetime": _now }))
@@ -242,7 +242,7 @@ class Channel(object):
             "deletes": deletes 
         }
         for subscriber in self.subscribers:
-            subscriber.send_frame('STATE_UPDATE', frame)
+            subscriber.send_frame('STATE_UPDATE', frame, channel=self)
 
     # TODO: We can do much better than this with a recursive json diffing
     #       algorithm. This is good enough for now...
@@ -307,8 +307,8 @@ class Channel(object):
         if self.presenceful:
             for subscriber in self.subscribers:
                 if subscriber == user: continue
-                subscriber.send_frame('UNSUBSCRIBE', frame)
-        user.send_frame('UNSUBSCRIBE', frame)
+                subscriber.send_frame('UNSUBSCRIBE', frame, channel=self)
+        user.send_frame('UNSUBSCRIBE', frame, channel=self)
         self.subscribers.remove(user)
         user.channel_unsubscribed(self)
         if self.history_size:
