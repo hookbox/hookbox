@@ -39,6 +39,10 @@ class HookboxOptionParser(object):
                           dest="log_file_access", type="string", 
                           default=defaults._log_file_access, metavar="LOG_FILE",
                           help="Log all access events to LOG_FILE, (default: %default)")
+        parser.add_option("-L", "--log-level",
+                          dest="log_level_name", type="string",
+                          default=defaults._log_level_name, metavar="LOG_LEVEL",
+                          help="Set logging level to LOG_LEVEL, (default: %default)")
         
     
     def _add_csp_options(self, parser, defaults):
@@ -156,6 +160,7 @@ class HookboxConfig(object):
     defaults = DefaultObject()
     defaults._log_file_err = None
     defaults._log_file_access = None
+    defaults._log_level_name = 'INFO'
     defaults._interface = '0.0.0.0'
     defaults._port = 8001
     defaults._web_api_port = None
