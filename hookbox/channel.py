@@ -155,7 +155,7 @@ class Channel(object):
             encoded_payload = json.loads(payload)
         except:
             raise ExpectedException("Invalid json for payload")
-        payload = encoded_payload
+        payload, options = encoded_payload, {}
         if needs_auth and (self.moderated or self.moderated_publish):
             form = { 'channel_name': self.name, 'payload': json.dumps(encoded_payload) }
             success, options = self.server.http_request('publish', user.get_cookie(conn), form, conn=conn)
@@ -175,8 +175,13 @@ class Channel(object):
         omit = None
         if not self.reflective:
             omit = conn
-        for subscriber in self.subscribers:
-            subscriber.send_frame('PUBLISH', frame, omit=omit, channel=self)
+
+        if options.get('only_to_sender', False):
+            user.send_frame('PUBLISH', frame, omit=omit, channel=self)
+        else:
+            for subscriber in self.subscribers:
+                subscriber.send_frame('PUBLISH', frame, omit=omit, channel=self)
+
         self.server.admin.channel_event('publish', self.name, frame)
         if self.history_size:
             del frame['channel_name']
