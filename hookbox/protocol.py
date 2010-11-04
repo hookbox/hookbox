@@ -32,8 +32,6 @@ class HookboxConn(object):
         except Exception, e:
             if 'closed' in str(e).lower():
                 pass
-            elif 'not connected' in str(e).lower():
-                pass
             else:
                 self.logger.warn("Unexpected error: %s", e, exc_info=True)
 
