@@ -149,4 +149,4 @@ class User(object):
         if recipient.name != self.name and self.reflective:
             self.send_frame('MESSAGE', frame)
         
-
+    
