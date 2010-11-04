@@ -9,7 +9,10 @@ import urlparse
 import eventlet
 from paste import urlmap, urlparser
 
-from restkit import Resource, SimplePool
+eventlet.monkey_patch(all=False, socket=True, select=True)
+
+from restkit import Resource
+from restkit.pool.reventlet import EventletPool
 
 import eventlet.wsgi
 import eventlet.websocket
@@ -72,8 +75,7 @@ class HookboxServer(object):
         self.conns_by_cookie = {}
         self.conns = {}
         self.users = {}
-        self.http = None
-        self.pool = SimplePool()
+        self.pool = EventletPool()
 
     def _ws_wrapper(self, environ, start_response):
         environ['PATH_INFO'] = environ['SCRIPT_NAME'] + environ['PATH_INFO']
@@ -191,7 +193,6 @@ class HookboxServer(object):
         form_body = urllib.urlencode(form)
 
         # for logging
-        url = "http://" + host
         if port != 80:
             url = urlparse.urlunparse((scheme,host + ":" + str(port), '', '','',''))
         else:
@@ -206,9 +207,8 @@ class HookboxServer(object):
         body = None
         try:
             try:
-                if self.http == None:
-                    self.http = Resource(url, pool_instance=self.pool)
-                response = self.http.request(method='POST', path=path, payload=form_body, headers=headers)
+                http = Resource(url, pool_instance=self.pool)
+                response = http.request(method='POST', path=path, payload=form_body, headers=headers)
                 body = response.body_string()
             except socket.error, e:
                 if e.errno == errno.ECONNREFUSED:
