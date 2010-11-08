@@ -13,6 +13,7 @@ class User(object):
     _options = {
         'reflective': True,
         'moderated_message': True,
+        'per_connection_subscriptions': False,
     }
 
     def __init__(self, server, name, **options):
@@ -94,7 +95,7 @@ class User(object):
             if conn not in channel_connections:
                 continue
             self.channels[channel].remove(conn)
-            if not self.channels[channel]:
+            if not self.channels[channel] and self.per_connection_subscriptions:
                 channel.unsubscribe(self, needs_auth=True, force_auth=True)
 
         if not self.connections:
@@ -118,6 +119,8 @@ class User(object):
         return self.name
     
     def send_frame(self, name, args={}, omit=None, channel=None):
+        if not self.per_connection_subscriptions:
+            channel = None
         if channel and channel not in self.channels:
             return
         for conn in (self.channels[channel] if channel else self.connections):
