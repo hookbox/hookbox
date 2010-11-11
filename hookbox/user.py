@@ -81,7 +81,7 @@ class User(object):
         eventlet.spawn(self._send_initial_subscriptions, conn)
         
     def _send_initial_subscriptions(self, conn):
-        for channel in self.channels:
+        for (channel, channel_connections) in self.channels.items():
             frame = channel._build_subscribe_frame(self)
             conn.send_frame('SUBSCRIBE', frame)
             
