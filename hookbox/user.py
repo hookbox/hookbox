@@ -27,7 +27,7 @@ class User(object):
 
     def serialize(self):
         return {
-            'channels': [ chan.name for chan in self.channels ],
+            'channels': [ chan_name for chan_name in self.channels ],
             'connections': [ conn.id for conn in self.connections ],
             'name': self.name,
             'options': dict([ (key, getattr(self, key)) for key in self._options])
@@ -84,9 +84,10 @@ class User(object):
         eventlet.spawn(self._send_initial_subscriptions, conn)
         
     def _send_initial_subscriptions(self, conn):
-        for (channel, channel_connections) in self.channels.items():
-            frame = channel._build_subscribe_frame(self)
-            conn.send_frame('SUBSCRIBE', frame)
+        for (channel_name, channel_connections) in self.channels.items():
+            if self.server.exists_channel(channel_name):
+                frame = self.server.get_channel(self, channel_name)._build_subscribe_frame(self)
+                conn.send_frame('SUBSCRIBE', frame)
             
     def remove_connection(self, conn):
         self.connections.remove(conn)
@@ -94,29 +95,31 @@ class User(object):
         # Remove the connection from the channels it was subscribed to,
         # unsubscribing the user from any channels which they no longer
         # have open connections to
-        for (channel, channel_connections) in self.channels.items():
+        for (channel_name, channel_connections) in self.channels.items():
             if conn not in channel_connections:
                 continue
-            self.channels[channel].remove(conn)
-            if not self.channels[channel] and self.per_connection_subscriptions:
-                channel.unsubscribe(self, needs_auth=True, force_auth=True)
+            self.channels[channel_name].remove(conn)
+            if self.per_connection_subscriptions and not self.channels[channel_name]:
+                if self.server.exists_channel(channel_name):
+                    self.server.get_channel(self, channel_name).unsubscribe(self, needs_auth=True, force_auth=True)
 
         if not self.connections:
-            for (channel, connections) in self.channels.items():
-                channel.unsubscribe(self, needs_auth=True, force_auth=True)
+            for (channel_name, connections) in self.channels.items():
+                if self.server.exists_channel(channel_name):
+                    self.server.get_channel(self, channel_name).unsubscribe(self, needs_auth=True, force_auth=True)
             # so the disconnect callback has a cookie
             self._temp_cookie = conn.get_cookie()
             self.server.remove_user(self.name)
             
     def channel_subscribed(self, channel, conn=None):
-        if channel not in self.channels:
-            self.channels[channel] = [ conn ]
-        elif conn not in self.channels[channel]:
-            self.channels[channel].append(conn)
+        if channel.name not in self.channels:
+            self.channels[channel.name] = [ conn ]
+        elif conn not in self.channels[channel.name]:
+            self.channels[channel.name].append(conn)
         
     def channel_unsubscribed(self, channel):
-        if channel in self.channels:
-            del self.channels[channel]
+        if channel.name in self.channels:
+            del self.channels[channel.name]
         
     def get_name(self):
         return self.name
@@ -124,11 +127,12 @@ class User(object):
     def send_frame(self, name, args={}, omit=None, channel=None):
         if not self.per_connection_subscriptions:
             channel = None
-        if channel and channel not in self.channels:
+        if channel and channel.name not in self.channels:
             return
-        for conn in (self.channels[channel] if channel else self.connections):
+        for conn in (self.channels[channel.name] if channel else self.connections)[:]:
             if conn is not omit:
-                conn.send_frame(name, args)
+                if conn.send_frame(name, args) is False:
+                    self.remove_connection(conn)
 
     def get_cookie(self, conn=None):
         if conn:
