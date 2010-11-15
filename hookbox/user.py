@@ -90,6 +90,8 @@ class User(object):
                 conn.send_frame('SUBSCRIBE', frame)
             
     def remove_connection(self, conn):
+        if conn not in self.connections:
+            return
         self.connections.remove(conn)
 
         # Remove the connection from the channels it was subscribed to,
