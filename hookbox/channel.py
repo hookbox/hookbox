@@ -293,7 +293,7 @@ class Channel(object):
             frame['presence'] = [];
         return frame
 
-    def unsubscribe(self, user, conn=None, needs_auth=True, force_auth=False):
+    def unsubscribe(self, user, conn=None, needs_auth=True, force_auth=False, destroy_empty=True):
         if user not in self.subscribers:
             return
         if needs_auth and (self.moderated or self.moderated_unsubscribe):
@@ -321,7 +321,7 @@ class Channel(object):
             self.history.append(('UNSUBSCRIBE', frame))
             self.prune_history()
         
-        if not self.subscribers:
+        if not self.subscribers and destroy_empty:
             self.server.destroy_channel(self.name)
     
     def destroy(self, needs_auth=True):
@@ -335,7 +335,7 @@ class Channel(object):
         if success:
             self.presenceful=False # Don't send out all unsubscribes to all users
             for user in self.subscribers:
-                self.unsubscribe(user, needs_auth=needs_auth, force_auth=True)
+                self.unsubscribe(user, needs_auth=needs_auth, force_auth=True, destroy_empty=False)
         return success
         
     def serialize(self):

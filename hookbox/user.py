@@ -98,7 +98,7 @@ class User(object):
         # unsubscribing the user from any channels which they no longer
         # have open connections to
         for (channel_name, channel_connections) in self.channels.items():
-            if conn not in channel_connections:
+            if conn not in self.channels[channel_name]:
                 continue
             self.channels[channel_name].remove(conn)
             if self.per_connection_subscriptions and not self.channels[channel_name]:
