@@ -474,3 +474,45 @@ Server Replies:
     [ true, {} ]
 
 The ``reflective`` of the user is now `false`.
+
+get_server_info
+================
+
+Returns all current users and connections of the server.
+
+Required Form Variables:
+
+* ``security_token``: The password specified in the config as ``-r`` or ``--api-security-token``.
+
+Returns json:
+
+[ success (boolean) , details (object) ]
+
+Example:
+
+Client Requests URL:
+
+.. sourcecode:: none
+
+    /web/get_server_info?security_token=yo
+
+
+Server Replies:
+
+
+.. sourcecode:: javascript
+
+    [
+        true,
+        {
+            "channels": [
+                "testing",
+                "testing2"
+            ],
+            "connections": [
+                "467412414c294f1a9d1759ace01455d9",
+                "759ace01455d9467412414c294f1a9d1",
+                "14c294f1a9d1759ace01455d94674124"
+            ]
+        }
+    ]
