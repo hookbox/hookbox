@@ -276,7 +276,13 @@ class HookboxServer(object):
 
     def get_connection(self, id):
         return self.conns.get(id, None)
-        
+
+    def serialize(self):
+        return {
+            'channels': self.channels.keys(),
+            'connections': self.conns.keys(),
+        }
+
     def exists_user(self, name):
         return name in self.users
 
