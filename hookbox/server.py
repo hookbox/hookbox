@@ -77,6 +77,7 @@ class HookboxServer(object):
         self.conns = {}
         self.users = {}
         self.manager = EventletManager(timeout=300, max_conn=300)
+        self.user_channel_presence = {}
 
     def _ws_wrapper(self, environ, start_response):
         environ['PATH_INFO'] = environ['SCRIPT_NAME'] + environ['PATH_INFO']
@@ -290,6 +291,9 @@ class HookboxServer(object):
         if name not in self.users:
             self.users[name] = User(self, name)
             self.admin.user_event('create', name, self.users[name].serialize())
+            if name in self.user_channel_presence:
+                for channel in self.user_channel_presence[name]:
+                    channel.state_set(name, True)
         return self.users[name]
 
     def remove_user(self, name):
@@ -304,6 +308,10 @@ class HookboxServer(object):
                 pass
             except Exception, e:
                 self.logger.warn("Unexpected error when removing user: %s", e, exc_info=True)
+
+            if name in self.user_channel_presence:
+                for channel in self.user_channel_presence[name]:
+                    channel.state_set(name, False)
         
     def create_channel(self, conn, channel_name, options={}, needs_auth=True):
         local_options = options.copy()
@@ -321,6 +329,18 @@ class HookboxServer(object):
                 raise ExpectedException(callback_options.get('error', 'Unauthorized'))
 
         chan = self.channels[channel_name] = channel.Channel(self, channel_name, **local_options)
+
+        #If channel needs to know about server presence, register channel with users
+        if chan.server_presenceful:
+            user_state = {}
+            for user in chan.server_user_presence:
+                user_state[user] = user in self.users
+                if user not in self.user_channel_presence:
+                    self.user_channel_presence[user] = [chan]
+                else:
+                    self.user_channel_presence[user].append(chan)
+            chan.state_multi_set(user_state)
+
         self.admin.channel_event('create_channel', channel_name, chan.serialize())
 
     def destroy_channel(self, channel_name, needs_auth=True):
@@ -328,6 +348,10 @@ class HookboxServer(object):
             return None
         channel = self.channels[channel_name]
         if channel.destroy(needs_auth):
+            if channel.server_presenceful:
+                for user in channel.server_user_presence:
+                    self.user_channel_presence[user].remove(channel)
+                
             del self.channels[channel_name]
             self.admin.channel_event('destroy_channel', channel_name, None)
 
