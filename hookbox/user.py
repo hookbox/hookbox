@@ -88,6 +88,9 @@ class User(object):
     def remove_connection(self, conn):
         self.connections.remove(conn)
         if not self.connections:
+            # so the disconnect/unsubscribe callbacks have a cookie
+            self._temp_cookie = conn.get_cookie()
+
             # each call to user_disconnected might result in an immediate call
             # to self.channel_unsubscribed, thus modifying self.channels and
             # messing up our loop. So we loop over a copy of self.channels...
@@ -95,8 +98,6 @@ class User(object):
             for channel in self.channels[:]:
                 channel.user_disconnected(self)
 #            print 'tell server to remove user...'
-            # so the disconnect callback has a cookie
-            self._temp_cookie = conn.get_cookie()
             self.server.remove_user(self.name)
             
     def channel_subscribed(self, channel):
