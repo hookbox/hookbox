@@ -12,7 +12,8 @@ from paste import urlmap, urlparser
 eventlet.monkey_patch(all=False, socket=True, select=True)
 
 from restkit import Resource
-from restkit.pool.reventlet import EventletPool
+from restkit.conn.eventlet_manager import EventletConnectionManager
+
 
 import eventlet.wsgi
 import eventlet.websocket
@@ -75,7 +76,7 @@ class HookboxServer(object):
         self.conns_by_cookie = {}
         self.conns = {}
         self.users = {}
-        self.pool = EventletPool()
+        self.pool = EventletConnectionManager(timeout=300, nb_connections=300)
 
     def _ws_wrapper(self, environ, start_response):
         environ['PATH_INFO'] = environ['SCRIPT_NAME'] + environ['PATH_INFO']
@@ -207,7 +208,7 @@ class HookboxServer(object):
         body = None
         try:
             try:
-                http = Resource(url, pool_instance=self.pool)
+                http = Resource(url, conn_manager=self.pool)
                 response = http.request(method='POST', path=path, payload=form_body, headers=headers)
                 body = response.body_string()
             except socket.error, e:
