@@ -160,6 +160,11 @@ class Channel(object):
         payload, options = encoded_payload, {}
         if needs_auth and (self.moderated or self.moderated_publish):
             form = { 'channel_name': self.name, 'payload': json.dumps(encoded_payload) }
+            if not self.anonymous:
+                if 'originator' in kwargs:
+                    form['user'] = kwargs['originator']
+                else:
+                    form['user'] = user.get_name()
             success, options = self.server.http_request('publish', user.get_cookie(conn), form, conn=conn)
             self.server.maybe_auto_subscribe(user, options, conn=conn)
             if not success:
