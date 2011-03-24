@@ -30,10 +30,18 @@ class HookboxConn(object):
         try:
             self._rtjp_conn.send_frame(*args, **kw).wait()
         except Exception, e:
+            ## Adding for debug purposes
+            self.user.add_frame_error(self, *args, **kw)
+            
             if 'closed' in str(e).lower():
                 pass
             else:
                 self.logger.warn("Unexpected error: %s", e, exc_info=True)
+                self.logger.warn("Unexpected error: connection %s" % self.id)
+                self.logger.warn("Unexpected error: frame args %s" % args)
+                self.logger.warn("Unexpected error: frame kwargs %s" % kwargs)
+                self.logger.warn("Unexpected error: user %s" % self.user.name)
+                self.logger.warn("Unexpected error: other connections for user: %s" % [c.id for c in user.connections])
 
     def send_error(self, *args, **kw):
         return self._rtjp_conn.send_error(*args, **kw)
