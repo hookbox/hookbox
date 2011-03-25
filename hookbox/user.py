@@ -1,3 +1,4 @@
+import logging
 import eventlet
 from errors import ExpectedException
 try:
@@ -10,10 +11,13 @@ def get_now():
   return datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
 
 class User(object):
+    logger = logging.getLogger('HookboxUser')
+    
     _options = {
         'reflective': True,
         'moderated_message': True,
         'per_connection_subscriptions': False,
+        'auto_subscribe':[]
     }
 
     def __init__(self, server, name, **options):
@@ -24,6 +28,7 @@ class User(object):
         self._temp_cookie = ""
         self.update_options(**self._options)
         self.update_options(**options)
+        self._frame_errors = {}
 
     def serialize(self):
         return {
@@ -106,11 +111,13 @@ class User(object):
                     self.server.get_channel(self, channel_name).unsubscribe(self, needs_auth=True, force_auth=True)
 
         if not self.connections:
+            # so the disconnect/unsubscribe callbacks have a cookie
+            self._temp_cookie = conn.get_cookie()
+
             for (channel_name, connections) in self.channels.items():
                 if self.server.exists_channel(channel_name):
                     self.server.get_channel(self, channel_name).unsubscribe(self, needs_auth=True, force_auth=True)
-            # so the disconnect callback has a cookie
-            self._temp_cookie = conn.get_cookie()
+
             self.server.remove_user(self.name)
             
     def channel_subscribed(self, channel, conn=None):
@@ -135,6 +142,25 @@ class User(object):
             if conn is not omit:
                 if conn.send_frame(name, args) is False:
                     self.remove_connection(conn)
+
+        ## Adding for debug purposes
+        if name in self._frame_errors:
+            error_conns = []
+            for conn, e in self._frame_errors[name]:
+                if e==args:
+                    error_conns.append(conn.id)
+
+            if error_conns:
+                self.logger.warn('Error sending frame %s, %s to connections %s' % (name, args, error_conns))
+                    
+    ###############################
+    ## Adding for debug purposes
+    def add_frame_error(self, conn, name, args):
+        if name in self._frame_errors:
+            self._frame_errors[name].append((conn.id, args,))
+        else:
+            self._frame_errors[name] = [(conn.id, args,)]
+    ###############################
 
     def get_cookie(self, conn=None):
         if conn:

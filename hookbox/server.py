@@ -12,7 +12,8 @@ from paste import urlmap, urlparser
 eventlet.monkey_patch(all=False, socket=True, select=True)
 
 from restkit import Resource
-from restkit.pool.reventlet import EventletPool
+from restkit.manager.meventlet import EventletManager
+
 
 import eventlet.wsgi
 import eventlet.websocket
@@ -75,7 +76,8 @@ class HookboxServer(object):
         self.conns_by_cookie = {}
         self.conns = {}
         self.users = {}
-        self.pool = EventletPool()
+        self.manager = EventletManager(timeout=300, max_conn=300)
+        self.user_channel_presence = {}
 
     def _ws_wrapper(self, environ, start_response):
         environ['PATH_INFO'] = environ['SCRIPT_NAME'] + environ['PATH_INFO']
@@ -158,10 +160,9 @@ class HookboxServer(object):
             full_path = self.config['cb_single_url']
         if full_path:
             u = urlparse.urlparse(full_path)
-            scheme = u.scheme
-            host = u.hostname
-            port = u.port or 80
-            path = u.path
+            scheme, host, port, path = u.scheme, u.hostname, u.port or 80, u.path
+            if self.config['cbtrailingslash'] and not path.endswith('/'):
+                path += '/'
             if u.query:
                 path += '?' + u.query
         else:
@@ -170,6 +171,8 @@ class HookboxServer(object):
 #                host = self.base_host
 #            else:
             path = self.base_path + '/' + self.config.get('cb_' + path_name)
+            if self.config['cbtrailingslash'] and not path.endswith('/'):
+                path += '/'
             scheme = self.config["cbhttps"] and "https" or "http"
             host = self.config["cbhost"]
             port = self.config["cbport"]
@@ -194,11 +197,9 @@ class HookboxServer(object):
 
         # for logging
         if port != 80:
-            url = urlparse.urlunparse((scheme,host + ":" + str(port), '', '','',''))
-        else:
-            url = urlparse.urlunparse((scheme,host, '', '','',''))
-       
-        
+            host = "%s:%s" % (host, port)
+        url = urlparse.urlunparse((scheme, host, '', '', '', ''))
+
         headers = {'content-type': 'application/x-www-form-urlencoded'}
         if cookie_string:
             headers['Cookie'] = cookie_string
@@ -207,7 +208,7 @@ class HookboxServer(object):
         body = None
         try:
             try:
-                http = Resource(url, pool_instance=self.pool)
+                http = Resource(url, manager=self.manager)
                 response = http.request(method='POST', path=path, payload=form_body, headers=headers)
                 body = response.body_string()
             except socket.error, e:
@@ -281,7 +282,13 @@ class HookboxServer(object):
 
     def get_connection(self, id):
         return self.conns.get(id, None)
-        
+
+    def serialize(self):
+        return {
+            'channels': self.channels.keys(),
+            'connections': self.conns.keys(),
+        }
+
     def exists_user(self, name):
         return name in self.users
 
@@ -289,6 +296,9 @@ class HookboxServer(object):
         if name not in self.users:
             self.users[name] = User(self, name)
             self.admin.user_event('create', name, self.users[name].serialize())
+            if name in self.user_channel_presence:
+                for channel in self.user_channel_presence[name]:
+                    channel.state_set(name, True)
         return self.users[name]
 
     def remove_user(self, name):
@@ -303,8 +313,13 @@ class HookboxServer(object):
                 pass
             except Exception, e:
                 self.logger.warn("Unexpected error when removing user: %s", e, exc_info=True)
+
+            if name in self.user_channel_presence:
+                for channel in self.user_channel_presence[name]:
+                    channel.state_set(name, False)
         
     def create_channel(self, conn, channel_name, options={}, needs_auth=True):
+        local_options = options.copy()
         if channel_name in self.channels:
             raise ExpectedException("Channel already exists")
         if needs_auth:
@@ -314,10 +329,23 @@ class HookboxServer(object):
             }
             success, callback_options = self.http_request('create_channel', cookie_string, form)
             if success:
-                options.update(callback_options)
+                local_options.update(callback_options)
             else:
                 raise ExpectedException(callback_options.get('error', 'Unauthorized'))
-        chan = self.channels[channel_name] = channel.Channel(self, channel_name, **options)
+
+        chan = self.channels[channel_name] = channel.Channel(self, channel_name, **local_options)
+
+        #If channel needs to know about server presence, register channel with users
+        if chan.server_presenceful:
+            user_state = {}
+            for user in chan.server_user_presence:
+                user_state[user] = user in self.users
+                if user not in self.user_channel_presence:
+                    self.user_channel_presence[user] = [chan]
+                else:
+                    self.user_channel_presence[user].append(chan)
+            chan.state_multi_set(user_state)
+
         self.admin.channel_event('create_channel', channel_name, chan.serialize())
 
     def destroy_channel(self, channel_name, needs_auth=True):
@@ -325,6 +353,10 @@ class HookboxServer(object):
             return None
         channel = self.channels[channel_name]
         if channel.destroy(needs_auth):
+            if channel.server_presenceful:
+                for user in channel.server_user_presence:
+                    self.user_channel_presence[user].remove(channel)
+                
             del self.channels[channel_name]
             self.admin.channel_event('destroy_channel', channel_name, None)
 
@@ -338,12 +370,13 @@ class HookboxServer(object):
 
     def maybe_auto_subscribe(self, user, options, conn=None):
         #print 'maybe autosubscribe....'
+        use_conn = conn if conn else user
         for destination in options.get('auto_subscribe', ()):
             #print 'subscribing to', destination
-            channel = self.get_channel(user, destination)
+            channel = self.get_channel(use_conn, destination)
             channel.subscribe(user, conn=conn, needs_auth=False)
         for destination in options.get('auto_unsubscribe', ()):
-            channel = self.get_channel(user, destination)
+            channel = self.get_channel(use_conn, destination)
             channel.unsubscribe(user, conn=conn, needs_auth=False)
 
 

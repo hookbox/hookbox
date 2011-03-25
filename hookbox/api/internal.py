@@ -1,5 +1,7 @@
-from hookbox.errors import ExpectedException
 import logging
+
+from hookbox.errors import ExpectedException
+
 class HookboxAPI(object):
     
     logger = logging.getLogger('HookboxAPI')
@@ -10,6 +12,9 @@ class HookboxAPI(object):
 
     def is_enabled(self):
         return bool(self.config['api_security_token'])
+
+    def get_server_info(self):
+        return self.server.serialize()
 
     def authorize(self, secret):
         if secret != self.config['api_security_token']:
@@ -43,6 +48,11 @@ class HookboxAPI(object):
         user = self.server.get_user(name)
         channel.subscribe(user, needs_auth=send_hook)
 
+    def message(self, sender_name, recipient_name, payload='null', send_hook=False):
+        if not self.server.exists_user(sender_name):
+            raise ExpectedException("User %s doesn't exist" % (sender_name,))
+        sender = self.server.get_user(sender_name)
+        sender.send_message(recipient_name, payload, needs_auth=send_hook)
 
     def disconnect_user(self, name):
         raise ExpectedException("Not Implemented")
@@ -78,19 +88,17 @@ class HookboxAPI(object):
             raise ExpectedException("Channel %s already exists" % (channel_name,))
         self.server.create_channel(None, channel_name, options, needs_auth=send_hook)
 
-
     def set_channel_options(self, channel_name, options):
         if not self.server.exists_channel(channel_name):
             raise ExpectedException("Channel %s doesn't exists" % (channel_name,))
         channel = self.server.get_channel(None, channel_name)
         channel.update_options(**options)
-    
+
     def get_channel_info(self, channel_name):
         if not self.server.exists_channel(channel_name):
             raise ExpectedException("Channel %s doesn't exists" % (channel_name,))
         channel = self.server.get_channel(None, channel_name)
         return channel.serialize()
-        
 
     def state_set_key(self, channel_name, key, val):
         if not self.server.exists_channel(channel_name):
@@ -103,7 +111,6 @@ class HookboxAPI(object):
             raise ExpectedException("Channel %s doesn't exists" % (channel_name,))
         channel = self.server.get_channel(None, channel_name)
         channel.state_del(key)
-        
         
     _config_vars = [
         "cbhost",

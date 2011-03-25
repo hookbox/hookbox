@@ -34,7 +34,12 @@ class HookboxWebAPI(object):
         except ExpectedException, e:
             start_response('200 Ok', [])
             return json.dumps([False, {'msg': str(e) }])
-            
+
+    def render_get_server_info(self, form, start_response):
+        info = self.api.get_server_info()
+        start_response('200 Ok', [])
+        return json.dumps([True, info])
+
     def render_publish(self, form, start_response):
         channel_name = form.get('channel_name', None)
         if not channel_name:
@@ -43,7 +48,6 @@ class HookboxWebAPI(object):
         originator = form.get('originator', None)
         send_hook = form.get('send_hook', '0') == '1'
         self.api.publish(channel_name, payload, originator, send_hook)
-        
         start_response('200 Ok', [])
         return json.dumps([True, {}])
 
@@ -82,6 +86,20 @@ class HookboxWebAPI(object):
         send_hook = form.get('send_hook', '0') == '1'
         
         self.api.subscribe(channel_name, name, send_hook)
+        start_response('200 Ok', [])
+        return json.dumps([True, {}])
+
+    def render_message(self, form, start_response):
+        sender_name = form.get('sender_name', None)
+        if not sender_name:
+            raise ExpectedException("Missing sender_name")
+        recipient_name = form.get('recipient_name', None)
+        if not recipient_name:
+            raise ExpectedException("Missing recipient_name")
+        payload = form.get('payload', 'null')
+        send_hook = form.get('send_hook', '0') == '1'
+        
+        self.api.message(sender_name, recipient_name, payload, send_hook)
         start_response('200 Ok', [])
         return json.dumps([True, {}])
 
@@ -159,7 +177,6 @@ class HookboxWebAPI(object):
         start_response('200 Ok', [])
         return json.dumps([True, info])
 
-        
     def render_state_set_key(self, form, start_response):
         channel_name = form.pop('channel_name', None)
         if not channel_name:
