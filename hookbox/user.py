@@ -39,7 +39,7 @@ class User(object):
         }
 
     def extract_valid_options(self, options):
-        return dict([ (key, options.pop(key, self._options[key])) for key in self._options ])
+        return dict([ (key, options.get(key, self._options[key])) for key in self._options ])
 
     def update_options(self, **options):
         # TODO: this can't remain so generic forever. At some point we need
