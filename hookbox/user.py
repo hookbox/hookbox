@@ -123,7 +123,7 @@ class User(object):
             error_conns = []
             for conn, e in self._frame_errors[name]:
                 if e==args:
-                    error_conns.append(conn.id)
+                    error_conns.append(conn)
 
             if error_conns:
                 self.logger.warn('Error sending frame %s, %s to connections %s' % (name, args, error_conns))
