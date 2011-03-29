@@ -218,7 +218,7 @@ class HookboxServer(object):
         except Exception, e:
             print repr(e)
             self.admin.webhook_event(path_name, url, 0, False, body, form_body, cookie_string, e)
-            logger.warn('Exception with webhook %s', url, exc_info=True)
+            logger.warn('Exception with webhook %s%s', (url, path), exc_info=True)
             return False, { 'error': 'failure: %s' % (e,) }
         if response.status_int != 200:
             self.admin.webhook_event(path_name, url, response.status_int, False, body, form_body, cookie_string, "Invalid status")
