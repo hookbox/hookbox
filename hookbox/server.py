@@ -229,7 +229,7 @@ class HookboxServer(object):
                     raise Exception("Connection refused for HTTP request to %s" % (url))
                 raise e
         except Exception, e:
-            print repr(e)
+            logger.warn('Caught error in http request %s' % repr(e))
             self.admin.webhook_event(path_name, url, 0, False, body, form_body, cookie_string, e)
             logger.warn('Exception with webhook %s%s' % (url, path), exc_info=True)
             return False, { 'error': 'failure: %s' % (e,) }
