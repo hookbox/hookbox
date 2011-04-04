@@ -27,12 +27,12 @@ class HookboxWebAPI(object):
             secret = form.pop('security_token', None)
             self.api.authorize(secret)
             return handler(form, start_response)
+        except ExpectedException, e:
+            start_response('200 Ok', [])
+            return json.dumps([False, {'msg': str(e) }])
         except Exception, e:
             self.logger.warn('REST Error: %s', path, exc_info=True)
             start_response('500 Internal server error', [])
-            return json.dumps([False, {'msg': str(e) }])
-        except ExpectedException, e:
-            start_response('200 Ok', [])
             return json.dumps([False, {'msg': str(e) }])
 
     def render_get_server_info(self, form, start_response):
