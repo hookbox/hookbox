@@ -140,18 +140,24 @@ class User(object):
             return
         for conn in (self.channels[channel.name] if channel else self.connections)[:]:
             if conn is not omit:
+                msg = 'user: %s, conn: %s, channel:%s, frame:%s-%s' % (self.name, conn.id, channel.name, name, args)
                 if conn.send_frame(name, args) is False:
+                    #log error
+                    self.logger.info('send_frame ( error ): %s' % msg)
                     self.remove_connection(conn)
+                else:
+                    #log successful
+                    self.logger.info('send_frame (success): %s' % msg)
 
-        ## Adding for debug purposes
-        if name in self._frame_errors:
-            error_conns = []
-            for conn, e in self._frame_errors[name]:
-                if e==args:
-                    error_conns.append(conn)
-
-            if error_conns:
-                self.logger.warn('Error sending frame %s, %s to connections %s' % (name, args, error_conns))
+#        ## Adding for debug purposes
+#        if name in self._frame_errors:
+#            error_conns = []
+#            for conn, e in self._frame_errors[name]:
+#                if e==args:
+#                    error_conns.append(conn)
+#
+#            if error_conns:
+#                self.logger.warn('Error sending frame %s for user %s, %s to connections %s' % (name, self.name, args, error_conns))
                     
     ###############################
     ## Adding for debug purposes
