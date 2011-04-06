@@ -92,6 +92,14 @@ class HookboxServer(object):
         self._accept(rtjp_conn)
         
     def run(self):
+        # dlg -- debugging backdoor hack
+        try:
+            import eventlet.backdoor
+            eventlet.spawn(eventlet.backdoor.backdoor_server, eventlet.listen(('localhost', 3000)))
+        except Exception:
+            logger.exception("Problem spawning debug backdoor")
+        # end debugging
+
         if not self._bound_socket:
             self._bound_socket = eventlet.listen((self.config.interface, self.config.port))
         eventlet.spawn(eventlet.wsgi.server, self._bound_socket, self._root_wsgi_app, log=EmptyLogShim())
