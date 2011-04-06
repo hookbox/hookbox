@@ -17,6 +17,7 @@ class Channel(object):
         'reflective': True,
         'history': [],
         'history_size': 0,
+        'history_duration': 0,
         'moderated': True,
         'moderated_publish': False,
         'moderated_subscribe': False,
@@ -62,6 +63,13 @@ class Channel(object):
     def prune_history(self):
         while len(self.history) > self.history_size:
             self.history.pop(0)
+        if self.history_duration > 0:
+            limit = (datetime.datetime.now() - \
+                     datetime.timedelta(seconds=self.history_duration))
+            limit_str = limit.strftime('%Y-%m-%dT%H:%M:%S')
+            while len(self.history) > 0 and \
+                      self.history[0][1]['datetime'] < limit_str:
+                self.history.pop(0)
 
     def update_options(self, notify_polling=True, **options):
         # TODO: this can't remain so generic forever. At some point we need
@@ -289,6 +297,7 @@ class Channel(object):
         frame = {"channel_name": self.name, "user": user.get_name()}
         frame["history"] = self.history
         frame["history_size"] = self.history_size
+        frame["history_duration"] = self.history_duration
         frame["state"] = self.state
         if self.presenceful:
             frame['presence'] = [ subscriber.get_name() for subscriber in self.subscribers ]

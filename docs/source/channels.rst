@@ -45,6 +45,7 @@ Channel Properties
 =============================
 
 * ``history_size``: the maximum number of entries in the channel history.
+* ``history_duration``: the maximum seconds of duration of life in the channel history.
 * ``history``: A list of events that have previously occurred on this channel. They may be Subscribe, Unsubscribe, or Publish events.
 * ``name``: The name of the channel.
 * ``presenceful``: A Boolean indicating whether presence information is shared with channel subscribers.

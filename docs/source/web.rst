@@ -216,6 +216,7 @@ Server Replies:
                         }
                     ]
                 ], 
+                "history_duration": 0,
                 "history_size": 5, 
                 "moderated": false, 
                 "moderated_publish": true, 
@@ -251,6 +252,7 @@ Optional Form Variables:
 
 * ``anonymous``: json boolean
 * ``history``: json list in the proper history format
+* ``history_duration``: json integer
 * ``history_size``: json integer
 * ``moderated``: json boolean
 * ``moderated_publish``: json boolean
