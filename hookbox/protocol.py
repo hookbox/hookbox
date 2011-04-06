@@ -39,7 +39,7 @@ class HookboxConn(object):
                 self.logger.warn("Unexpected error: %s", e, exc_info=True)
                 self.logger.warn("Unexpected error: connection %s" % self.id)
                 self.logger.warn("Unexpected error: frame args %s" % (args,))
-                self.logger.warn("Unexpected error: frame kwargs %s" % kwargs)
+                self.logger.warn("Unexpected error: frame kwargs %s" % kw)
                 self.logger.warn("Unexpected error: user %s" % self.user.name)
                 self.logger.warn("Unexpected error: other connections for user: %s" % [c.id for c in user.connections])
             return False
