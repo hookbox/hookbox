@@ -95,7 +95,7 @@ class HookboxServer(object):
         # dlg -- debugging backdoor hack
         try:
             import eventlet.backdoor
-            eventlet.spawn(eventlet.backdoor.backdoor_server, eventlet.listen(('localhost', 3000)))
+            eventlet.spawn(eventlet.backdoor.backdoor_server, eventlet.listen(('localhost', 3000)), locals={'server':self})
         except Exception:
             logger.exception("Problem spawning debug backdoor")
         # end debugging
