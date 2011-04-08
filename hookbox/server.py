@@ -377,12 +377,12 @@ class SockWebSocketWrapper(object):
             data = data.encode('utf-8')
         return data
 
-    def send(self, data):
-        self._ws.send(data)
+    def send(self, data, send_non_blocking=False):
+        self._ws.send(data, send_non_blocking=send_non_blocking)
         return len(data)
-        
-    def sendall(self, data):
-        self.send(data)
+
+    def sendall(self, data, send_non_blocking=False):
+        self.send(data, send_non_blocking=send_non_blocking)
         
     def __getattr__(self, key):
         return getattr(self._ws, key)
