@@ -41,7 +41,7 @@ class HookboxConn(object):
                 self.logger.warn("Unexpected error: frame args %s" % (args,))
                 self.logger.warn("Unexpected error: frame kwargs %s" % kw)
                 self.logger.warn("Unexpected error: user %s" % self.user.name)
-                self.logger.warn("Unexpected error: other connections for user: %s" % [c.id for c in user.connections])
+                self.logger.warn("Unexpected error: other connections for user: %s" % [c.id for c in self.user.connections])
             return False
 
     def send_error(self, *args, **kw):
