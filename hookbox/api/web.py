@@ -53,6 +53,7 @@ class HookboxWebAPI(object):
 
     def render_publish_multi(self, form, start_response):
         channel_names = form.get('channel_names', None)
+        assert(isinstance(channel_names, str))
         if not channel_names:
             raise ExpectedException("Missing channel_names")
         channel_name_list = channel_names.split(',')
