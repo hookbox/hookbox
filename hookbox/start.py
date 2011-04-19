@@ -23,8 +23,8 @@ def run_objgraph(server, config):
         sys.exit(0)
 
 def main(bound_socket=None, bound_api_socket=None):
-    hubs.use_hub("pyevent") # dlg test of alternate hub
-
+    #hubs.use_hub("pyevent") # dlg test of alternate hub
+    # THE ABOVE WAS COMMENTED OUT BY GPLITT on 4-19-2011
     config = HookboxConfig()
     config.update_from_commandline_arguments(sys.argv)
     log.setup_logging(config)
