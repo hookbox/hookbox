@@ -150,7 +150,7 @@ class User(object):
             self.remove_connection(conn)
         else:
             #log successful
-            self.logger.info('send_frame (success): %s' % msg)
+            #self.logger.info('send_frame (success): %s' % msg)
 
 
 #        ## Adding for debug purposes

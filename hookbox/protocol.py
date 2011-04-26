@@ -67,7 +67,7 @@ class HookboxConn(object):
         while True:
             try:
 #                print 'read a frame...'
-                self.logger.debug('%s waiting for a frame', self)
+#                self.logger.debug('%s waiting for a frame', self)
                 fid, fname, fargs= self._rtjp_conn.recv_frame().wait()
 #                print 'got frame', fid, fname, fargs
             except rtjp_eventlet.errors.ConnectionLost, e:
