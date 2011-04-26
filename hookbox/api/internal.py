@@ -17,7 +17,6 @@ class HookboxAPI(object):
         return self.server.serialize()
 
     def authorize(self, secret):
-	self.logger.error('GP3')
         if secret != self.config['api_security_token']:
             raise ExpectedException("Invalid Security Token")
 
@@ -43,7 +42,6 @@ class HookboxAPI(object):
         channel.unsubscribe(user, needs_auth=send_hook)
     
     def subscribe(self, channel_name, name, send_hook=False):
-	self.logger.error('GP1')
         if not self.server.exists_user(name):
             raise ExpectedException("User %s doesn't exist" % (name,))
         channel = self.server.get_channel(None, channel_name)
@@ -86,7 +84,6 @@ class HookboxAPI(object):
         self.server.destroy_channel(channel_name, needs_auth=send_hook)
         
     def create_channel(self, channel_name, options, send_hook=False):
-	self.logger.error('GP2')
         if self.server.exists_channel(channel_name):
             raise ExpectedException("Channel %s already exists" % (channel_name,))
         self.server.create_channel(None, channel_name, options, needs_auth=send_hook)
