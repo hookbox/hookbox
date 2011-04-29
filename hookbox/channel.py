@@ -332,7 +332,10 @@ class Channel(object):
                 if subscriber == user: continue
                 subscriber.send_frame('UNSUBSCRIBE', frame, channel=self)
         user.send_frame('UNSUBSCRIBE', frame, channel=self)
-        self.subscribers.remove(user)
+        try:
+            self.subscribers.remove(user)
+        except ValueError: # Maybe this user are no more subscribed.
+            pass
         user.channel_unsubscribed(self)
         if self.history_size:
             del frame['channel_name']
