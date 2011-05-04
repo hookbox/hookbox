@@ -1,57 +1,57 @@
 from optparse import OptionParser
 
 class NoDefault(object):
-    
-    def __nonzero__(self): 
+
+    def __nonzero__(self):
         return False
 
 class DefaultObject(object):
     pass
 
 class HookboxOptionParser(object):
-    
+
     def __init__(self, defaults):
         parser = OptionParser()
         self._add_logging_options(parser, defaults)
         self._add_csp_options(parser, defaults)
         self._add_callback_interface_options(parser, defaults)
-        self._add_callback_path_options(parser, defaults)        
+        self._add_callback_path_options(parser, defaults)
         self._add_admin_options(parser, defaults)
         self._parser = parser
-    
+
     def parse_arguments(self, arguments):
         options, args = self._parser.parse_args(arguments)
         option_dict = dict((attr, getattr(options, attr))
                            for attr in dir(options)
                            if self._is_hookbox_attr(attr))
         return (option_dict, args)
-    
+
     def _is_hookbox_attr(self, attr):
         return (not attr.startswith('_')) and \
             (attr not in ('ensure_value', 'read_file', 'read_module'))
-    
+
     def _add_logging_options(self, parser, defaults):
-        parser.add_option("-E", "--log-file-errors", 
-                          dest="log_file_err", type="string", 
+        parser.add_option("-E", "--log-file-errors",
+                          dest="log_file_err", type="string",
                           default=defaults._log_file_err, metavar="LOG_FILE",
                           help="Log all warnings/errors to LOG_FILE, (default: %default)")
-        parser.add_option("-A", "--log-file-access", 
-                          dest="log_file_access", type="string", 
+        parser.add_option("-A", "--log-file-access",
+                          dest="log_file_access", type="string",
                           default=defaults._log_file_access, metavar="LOG_FILE",
                           help="Log all access events to LOG_FILE, (default: %default)")
         parser.add_option("-L", "--log-level",
                           dest="log_level_name", type="string",
                           default=defaults._log_level_name, metavar="LOG_LEVEL",
                           help="Set logging level to LOG_LEVEL, (default: %default)")
-        
-    
+
+
     def _add_csp_options(self, parser, defaults):
         """ add options specific to the CSP interface """
-        parser.add_option("-i", "--interface", 
-                          dest="interface", type="string", 
+        parser.add_option("-i", "--interface",
+                          dest="interface", type="string",
                           default=defaults._interface, metavar="IFACE",
                           help="bind listening socket to IFACE, (default: %default)")
-        parser.add_option("-p", "--port", 
+        parser.add_option("-p", "--port",
                           dest="port", type="int",
                           default=defaults._port, metavar="PORT",
                           help="bind listening socket to PORT, (default: %default)")
@@ -63,26 +63,26 @@ class HookboxOptionParser(object):
                           dest="web_api_interface", type="string",
                           default=defaults._web_api_interface, metavar="WEBAPIINTERFACE",
                           help="bind web api listening socket to WEBAPIINTERFACE, (default: %default)")
-    
+
     def _add_callback_interface_options(self, parser, defaults):
         """ add options related to the hookbox callbacks """
-        parser.add_option("--cbport", 
-                          dest="cbport", type="int", 
+        parser.add_option("--cbport",
+                          dest="cbport", type="int",
                           default=defaults._cbport, metavar="PORT",
                           help="Make http callbacks to PORT, (default: %default)")
-        parser.add_option("--cbhost", 
-                          dest="cbhost", type="string", 
+        parser.add_option("--cbhost",
+                          dest="cbhost", type="string",
                           default=defaults._cbhost, metavar="HOST",
                           help="Make http callbacks to HOST, (default: %default)")
-        parser.add_option("--cbpath", 
-                          dest="cbpath", type="string", 
+        parser.add_option("--cbpath",
+                          dest="cbpath", type="string",
                           default=defaults._cbpath, metavar="PATH",
                           help="Make http callbacks to base PATH, (default: %default)")
-        parser.add_option("-c", "--cookie-identifier", 
+        parser.add_option("-c", "--cookie-identifier",
                           dest="cookie_identifier", type="string",
                           metavar="COOKIE_IDENTIFIER",
                           help="The name of the cookie field used to identify unique sessions.")
-        parser.add_option("-s", "--webhook-secret", 
+        parser.add_option("-s", "--webhook-secret",
                           dest="webhook_secret", type="string",
                           metavar="WEBHOOK_SECRET",
                           help="The WEBHOOK_SECRET token to pass to all webhook callbacks as form variable \"secret\".")
@@ -94,6 +94,10 @@ class HookboxOptionParser(object):
                           dest="cbtrailingslash", action="store_true",
                           default=defaults._cbtrailingslash,
                           help="Append a trailing slash to the callback URL.")
+        parser.add_option("--cbsendhookboxversion",
+                          dest="cbsendhookboxversion", action="store_true",
+                          default=defaults._cbsendhookboxversion, metavar="SEND_HOOKBOX_VERSION",
+                          help="Send hookbox version info to callbacks using X-Hookbox-Version header.")
     
     def _add_callback_path_options(self, parser, defaults):
         parser.add_option('--cb-connect', 
@@ -155,7 +159,7 @@ class HookboxOptionParser(object):
 class HookboxConfig(object):
     """ The hookbox config holds server configuration data
     """
-    
+
     # define the defaults here
     defaults = DefaultObject()
     defaults._log_file_err = None
@@ -185,19 +189,19 @@ class HookboxConfig(object):
     defaults._admin_password = NoDefault()
     defaults._debug = False
     defaults._objgraph = 0
-    
+
     def __init__(self):
-        config_items = [attr for attr in dir(self.defaults) 
+        config_items = [attr for attr in dir(self.defaults)
                         if not attr.startswith('__')]
         for config_item in config_items:
-            setattr(self, config_item[1:], 
+            setattr(self, config_item[1:],
                     getattr(self.defaults, config_item))
-    
+
     def update_from_commandline_arguments(self, args):
         parser = HookboxOptionParser(self.defaults)
         options, arguments = parser.parse_arguments(args)
         for attr in options:
             setattr(self, attr, options[attr])
-    
+
     get = __getitem__ = lambda self, attr: getattr(self, attr)
     set = __setitem__ = lambda self, attr, val: setattr(self, attr, val)
