@@ -97,7 +97,7 @@ class HookboxOptionParser(object):
         parser.add_option("--cbsendhookboxversion",
                           dest="cbsendhookboxversion", action="store_true",
                           default=defaults._cbsendhookboxversion, metavar="SEND_HOOKBOX_VERSION",
-                          help="Send hookbox version info to callbacks using X-Hookbox-Version header.")
+                          help="Send hookbox version info to webhook callbacks using X-Hookbox-Version header.")
     
     def _add_callback_path_options(self, parser, defaults):
         parser.add_option('--cb-connect', 
