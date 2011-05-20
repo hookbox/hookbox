@@ -176,6 +176,7 @@ class HookboxConfig(object):
     defaults._webhook_secret = NoDefault()
     defaults._cbhttps = False
     defaults._cbtrailingslash = False
+    defaults._cbsendhookboxversion = False
     defaults._cb_connect = 'connect'
     defaults._cb_disconnect = 'disconnect'
     defaults._cb_create_channel = 'create_channel'
