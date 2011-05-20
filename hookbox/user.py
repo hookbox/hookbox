@@ -140,7 +140,8 @@ class User(object):
             return
         for conn in (self.channels[channel.name] if channel else self.connections)[:]:
             if conn is not omit:
-                msg = 'user: %s, conn: %s, channel:%s, frame:%s-%s' % (self.name, conn.id, channel.name, name, args)
+                channel_name = channel.name if hasattr(channel, name) else '<no channel>'
+                msg = 'user: %s, conn: %s, channel:%s, frame:%s-%s' % (self.name, conn.id, channel_name, name, args)
                 eventlet.spawn_n(self._send_frame, conn, name, args, msg)
 
     def _send_frame(self, conn, name, args, msg=""): # msg is for debugging
