@@ -200,7 +200,7 @@ class HookboxWebAPI(object):
             raise ExpectedException("Missing channel_name")
         if 'key' not in form:
             raise ExpectedExcpetion("Missing 'key' argument")
-        self.api.state_delete_key(channel_name, key)
+        self.api.state_delete_key(channel_name, form['key'])
         start_response('200 Ok', [])
         return json.dumps([True, {}])
 
