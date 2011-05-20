@@ -141,17 +141,13 @@ class User(object):
         for conn in (self.channels[channel.name] if channel else self.connections)[:]:
             if conn is not omit:
                 msg = 'user: %s, conn: %s, channel:%s, frame:%s-%s' % (self.name, conn.id, channel.name, name, args)
-                eventlet.spawn_n(self._send_frame, conn, name, args, msg)
-
-    def _send_frame(self, conn, name, args, msg=""): # msg is for debugging
-        if conn.send_frame(name, args) is False:
-            #log error
-            self.logger.info('send_frame ( error ): %s' % msg)
-            self.remove_connection(conn)
-        else:
-            #log successful
-            self.logger.info('send_frame (success): %s' % msg)
-
+                if conn.send_frame(name, args) is False:
+                    #log error
+                    self.logger.info('send_frame ( error ): %s' % msg)
+                    self.remove_connection(conn)
+                else:
+                    #log successful
+                    self.logger.info('send_frame (success): %s' % msg)
 
 #        ## Adding for debug purposes
 #        if name in self._frame_errors:
