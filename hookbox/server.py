@@ -12,6 +12,7 @@ from paste import urlmap, urlparser
 eventlet.monkey_patch(all=False, socket=True, select=True)
 
 from restkit import Resource
+from restkit.globals import set_manager
 from restkit.manager.meventlet import EventletManager
 
 
@@ -76,7 +77,11 @@ class HookboxServer(object):
         self.conns_by_cookie = {}
         self.conns = {}
         self.users = {}
-        self.manager = EventletManager(timeout=300, max_conn=300)
+
+        set_manager(EventletManager(timeout=300, max_conn=300))
+        self._http = None
+        self._url = None
+
 
     def _ws_wrapper(self, environ, start_response):
         environ['PATH_INFO'] = environ['SCRIPT_NAME'] + environ['PATH_INFO']
@@ -207,7 +212,12 @@ class HookboxServer(object):
         body = None
         try:
             try:
-                http = Resource(url, manager=self.manager)
+                #check and change url if necessary
+                if self._url is None or self._url != url:
+                    self._http = Resource(url)
+                    self._url = url
+                http = self._http
+
                 response = http.request(method='POST', path=path, payload=form_body, headers=headers)
                 body = response.body_string()
             except socket.error, e:
