@@ -4,6 +4,7 @@ import logging
 import os
 import socket
 import sys
+import resource
 import urllib
 import urlparse
 import eventlet
@@ -82,6 +83,9 @@ class HookboxServer(object):
         self._http = None
         self._url = None
 
+        #get soft limit of max number of open files
+        self.max_conn = resource.getrlimit(resource.RLIMIT_NOFILE)[0]
+
 
     def _ws_wrapper(self, environ, start_response):
         environ['PATH_INFO'] = environ['SCRIPT_NAME'] + environ['PATH_INFO']
@@ -98,7 +102,7 @@ class HookboxServer(object):
     def run(self):
         if not self._bound_socket:
             self._bound_socket = eventlet.listen((self.config.interface, self.config.port))
-        eventlet.spawn(eventlet.wsgi.server, self._bound_socket, self._root_wsgi_app, log=EmptyLogShim())
+        eventlet.spawn(eventlet.wsgi.server, self._bound_socket, self._root_wsgi_app, log=EmptyLogShim(), max_size=self.max_conn)
         
         # We can't get the main interface host, port from config, in case it
         # was passed in directly to the constructor as a bound sock.
