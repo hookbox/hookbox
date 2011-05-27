@@ -7,7 +7,7 @@ import logging
 from hookbox.errors import ExpectedException
 import hookbox #for version info
 import cgi
-import datetime
+from hookbox.utils import get_now
 import eventlet
 
 
@@ -97,7 +97,7 @@ class HookboxAdminApp(object):
             "form": form_body and cgi.escape(str(form_body)),
             "cookie": cookie_string and cgi.escape(str(cookie_string)),
             "err": err and cgi.escape(str(err)),
-            "date": datetime.datetime.now().strftime("%A %d-%b-%y %H:%M:%S %Z")
+            "date": get_now(),
         }
         self.webhooks_history.append(frame)
         while len(self.webhooks_history) > WEBHOOK_HISTORY_SIZE:

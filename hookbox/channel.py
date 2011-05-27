@@ -5,11 +5,7 @@ try:
     import json
 except ImportError:
     import simplejson as json
-import datetime
-
-def get_now():
-  return datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
-
+from utils import get_now
 
 
 class Channel(object):

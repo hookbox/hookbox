@@ -4,10 +4,8 @@ try:
     import json
 except ImportError:
     import simplejson as json
-import datetime
+from utils import get_now
 
-def get_now():
-  return datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
 
 class User(object):
     _options = {
