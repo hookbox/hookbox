@@ -97,7 +97,7 @@ var GUI = Class(function() {
 	
 	this.signon = function() {
 		this.client.setPassword($('#password').val())
-		var url = 'http://' + document.domain + ':' + (location.port || 80) + '/admin/csp'
+		var url = 'http://' + document.domain + ':' + (window.location.port || 80) + window.location.pathname +'/csp'
 		net.connect(this.client, 'csp', {'url': url});
 		this.client.subscribe("CONNECTED", this, 'CONNECTED');
 		this.client.subscribe("OVERVIEW", this, 'OVERVIEW');
