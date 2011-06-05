@@ -171,6 +171,25 @@ class User(object):
             self._frame_errors[name] = [(conn.id, args,)]
     ###############################
 
+        ## Adding for debug purposes
+        if name in self._frame_errors:
+            error_conns = []
+            for conn, e in self._frame_errors[name]:
+                if e==args:
+                    error_conns.append(conn)
+
+            if error_conns:
+                self.logger.warn('Error sending frame %s, %s to connections %s' % (name, args, error_conns))
+                    
+    ###############################
+    ## Adding for debug purposes
+    def add_frame_error(self, conn, name, args):
+        if name in self._frame_errors:
+            self._frame_errors[name].append((conn.id, args,))
+        else:
+            self._frame_errors[name] = [(conn.id, args,)]
+    ###############################
+
     def get_cookie(self, conn=None):
         if conn:
             return conn.get_cookie()
