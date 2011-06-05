@@ -4,7 +4,6 @@ import logging
 import os
 import socket
 import sys
-import resource
 import urllib
 import urlparse
 import eventlet
@@ -83,9 +82,13 @@ class HookboxServer(object):
         self.user_channel_presence = {}
         self._http = None
         self._url = None
-
-        #get soft limit of max number of open files
-        self.max_conn = resource.getrlimit(resource.RLIMIT_NOFILE)[0]
+        #connection hack to increase connection limit, linux only for now
+        try:
+            import resource
+            #get soft limit of max number of open files
+            self.max_conn = resource.getrlimit(resource.RLIMIT_NOFILE)[0]
+        except ImportError:
+            self.max_conn = 1024
 
 
     def _ws_wrapper(self, environ, start_response):
