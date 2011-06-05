@@ -4,7 +4,7 @@ def setup_logging(config):
     fmt_string = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
     logging.basicConfig(format=fmt_string)
     root_logger = logging.getLogger()
-    root_logger.setLevel(logging.INFO)
+    root_logger.setLevel(logging.getLevelName(config.log_level_name))
     formatter = logging.Formatter(fmt_string)
     if config.log_file_err:
         try:

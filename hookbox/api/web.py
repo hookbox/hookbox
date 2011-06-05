@@ -27,12 +27,12 @@ class HookboxWebAPI(object):
             secret = form.pop('security_token', None)
             self.api.authorize(secret)
             return handler(form, start_response)
+        except ExpectedException, e:
+            start_response('200 Ok', [])
+            return json.dumps([False, {'msg': str(e) }])
         except Exception, e:
             self.logger.warn('REST Error: %s', path, exc_info=True)
             start_response('500 Internal server error', [])
-            return json.dumps([False, {'msg': str(e) }])
-        except ExpectedException, e:
-            start_response('200 Ok', [])
             return json.dumps([False, {'msg': str(e) }])
 
     def render_get_server_info(self, form, start_response):
@@ -53,6 +53,7 @@ class HookboxWebAPI(object):
 
     def render_publish_multi(self, form, start_response):
         channel_names = form.get('channel_names', None)
+        assert(isinstance(channel_names, str))
         if not channel_names:
             raise ExpectedException("Missing channel_names")
         channel_name_list = channel_names.split(',')
@@ -199,7 +200,7 @@ class HookboxWebAPI(object):
             raise ExpectedException("Missing channel_name")
         if 'key' not in form:
             raise ExpectedExcpetion("Missing 'key' argument")
-        self.api.state_delete_key(channel_name, key)
+        self.api.state_delete_key(channel_name, form['key'])
         start_response('200 Ok', [])
         return json.dumps([True, {}])
 

@@ -30,10 +30,19 @@ class HookboxConn(object):
         try:
             self._rtjp_conn.send_frame(*args, **kw).wait()
         except Exception, e:
-            if 'closed' in str(e).lower():
+            ## Adding for debug purposes
+            # self.user.add_frame_error(self, *args, **kw)
+            
+            if 'closed' in str(e).lower() or 'not connected' in str(e).lower():
                 pass
             else:
                 self.logger.warn("Unexpected error: %s", e, exc_info=True)
+                self.logger.warn("Unexpected error: connection %s" % self.id)
+                self.logger.warn("Unexpected error: frame args %s" % (args,))
+                self.logger.warn("Unexpected error: frame kwargs %s" % kw)
+                self.logger.warn("Unexpected error: user %s" % self.user.name)
+                self.logger.warn("Unexpected error: other connections for user: %s" % [c.id for c in self.user.connections])
+            return False
 
     def send_error(self, *args, **kw):
         return self._rtjp_conn.send_error(*args, **kw)
@@ -58,7 +67,7 @@ class HookboxConn(object):
         while True:
             try:
 #                print 'read a frame...'
-                self.logger.debug('%s waiting for a frame', self)
+#                self.logger.debug('%s waiting for a frame', self)
                 fid, fname, fargs= self._rtjp_conn.recv_frame().wait()
 #                print 'got frame', fid, fname, fargs
             except rtjp_eventlet.errors.ConnectionLost, e:
@@ -101,9 +110,8 @@ class HookboxConn(object):
         self.cookie_string = fargs['cookie_string']
         self.cookies = parse_cookies(fargs['cookie_string'])
         self.cookie_id = self.cookies.get(self.cookie_identifier, None)
-        self.server.connect(self)
+        self.server.connect(self, fargs.get('payload', 'null'))
         self.state = 'connected'
-        self.send_frame('CONNECTED', { 'name': self.user.get_name() })
     
     def frame_SUBSCRIBE(self, fid, fargs):
         if self.state != 'connected':

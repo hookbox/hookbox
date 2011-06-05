@@ -437,7 +437,8 @@ Server Replies:
             "name": "mcarter",
             "options": {
                 "reflective": true,
-                "moderated_message": true
+                "moderated_message": true,
+                "per_connection_subscriptions": false
             }
         }
     ]
@@ -446,7 +447,7 @@ Server Replies:
 set_user_options
 ===================
 
-Set the options on a user.
+Set the options for a user.
 
 Required Form Variables:
 
@@ -455,8 +456,9 @@ Required Form Variables:
 
 Optional Form Variables:
 
-* ``reflective``: json boolean
-* ``moderated_message``: json boolean
+* ``reflective``: json boolean - if true, private messages sent by this user will also be sent back to the user
+* ``moderated_message``: json boolean - if true, private messages sent by this user will call the message webhook
+* ``per_connection_subscriptions``: json boolean - if true, only the user connection (or connections) that sends a subscribe frame will be subscribed to the specified channel. Otherwise, all of a user's connections will share channel subscriptions established by any of the connections. 
 
 Example:
 
