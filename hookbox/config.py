@@ -59,6 +59,10 @@ class HookboxOptionParser(object):
                           dest="web_api_interface", type="string",
                           default=defaults._web_api_interface, metavar="WEBAPIINTERFACE",
                           help="bind web api listening socket to WEBAPIINTERFACE, (default: %default)")
+        parser.add_option('-x', '--ignore-publish-non-existing-channels',
+                          dest="ignore_publish_non_existing_channels",
+                          default=defaults._ignore_publish_non_existing_channels,
+                          help="ignore if publishing to a not existing channels")
     
     def _add_callback_interface_options(self, parser, defaults):
         """ add options related to the hookbox callbacks """
@@ -180,6 +184,7 @@ class HookboxConfig(object):
     defaults._admin_password = NoDefault()
     defaults._debug = False
     defaults._objgraph = 0
+    defaults._ignore_publish_non_existing_channels = False
     
     def __init__(self):
         config_items = [attr for attr in dir(self.defaults) 
