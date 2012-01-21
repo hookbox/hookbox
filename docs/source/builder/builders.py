@@ -11,6 +11,7 @@ import re
 from mako.lookup import TemplateLookup
 from mako.template import Template
 import os
+import gettext
 
 class MakoBridge(TemplateBridge):
     def init(self, builder, *args, **kw):
@@ -28,6 +29,7 @@ class MakoBridge(TemplateBridge):
         context['prevtopic'] = context.pop('prev', None)
         context['nexttopic'] = context.pop('next', None)
         context['mako_layout'] = self.layout == 'html' and 'static_base.mako' or 'site_base.mako'
+        context['_'] = gettext.gettext
         return self.lookup.get_template(template).render_unicode(**context)
         
     
