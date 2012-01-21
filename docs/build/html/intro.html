@@ -7,7 +7,7 @@
         
         <title>
     Introduction
- &mdash; hookbox v0.2.0 documentation</title>
+ &mdash; hookbox 0.3.4 documentation</title>
         
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/docs.css" type="text/css" />
@@ -15,17 +15,18 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
           URL_ROOT:    '#',
-          VERSION:     '0.2.0',
+          VERSION:     '0.3.4',
           COLLAPSE_MODINDEX: false,
           FILE_SUFFIX: '.html'
       };
     </script>
         <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
         <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="_static/init.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="hookbox v0.2.0 documentation" href="index.html" />
+    <link rel="top" title="hookbox 0.3.4 documentation" href="index.html" />
         <link rel="next" title="Tutorial" href="tutorial.html" />
         <link rel="prev" title="Hookbox Documentation" href="index.html" />
     
@@ -37,7 +38,7 @@
 
 
 
-        <h1>hookbox v0.2.0 documentation</h1>
+        <h1>hookbox 0.3.4 documentation</h1>
 
         <div id="search">
         Search:
@@ -49,7 +50,7 @@
         </div>
 
         <div class="versionheader">
-            Version: <span class="versionnum">0.2.0</span> Last Updated: None
+            Version: <span class="versionnum">0.3.4</span> Last Updated: Jan 21, 2012
         </div>
         <div class="clearboth"></div>
 
@@ -83,17 +84,17 @@
                 </h2>
             </div>
                 <ul>
-<li><a class="reference external" href="#">Introduction</a><ul>
-<li><a class="reference external" href="#overview">Overview</a></li>
-<li><a class="reference external" href="#terminology">Terminology</a></li>
-<li><a class="reference external" href="#common-patterns">Common Patterns</a><ul>
-<li><a class="reference external" href="#real-time-graph-time-series">Real-time graph (time series)</a></li>
-<li><a class="reference external" href="#chat-room-with-presence">Chat Room (with presence)</a></li>
-<li><a class="reference external" href="#card-game">Card Game</a></li>
+<li><a class="reference internal" href="#">Introduction</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
+<li><a class="reference internal" href="#terminology">Terminology</a></li>
+<li><a class="reference internal" href="#common-patterns">Common Patterns</a><ul>
+<li><a class="reference internal" href="#real-time-graph-time-series">Real-time graph (time series)</a></li>
+<li><a class="reference internal" href="#chat-room-with-presence">Chat Room (with presence)</a></li>
+<li><a class="reference internal" href="#card-game">Card Game</a></li>
 </ul>
 </li>
-<li><a class="reference external" href="#installation">Installation</a></li>
-<li><a class="reference external" href="#github">Github</a></li>
+<li><a class="reference internal" href="#installation">Installation</a></li>
+<li><a class="reference internal" href="#github">Github</a></li>
 </ul>
 </li>
 </ul>
@@ -117,16 +118,16 @@
 <h2>Terminology<a class="headerlink" href="#terminology" title="Permalink to this headline">¶</a></h2>
 <p>Throughout this documentation, we throw various terms around like you should know what we&#8217;re talking about. This is probably not always the case, so this section includes a list of terms that have caused trouble for previous readers.</p>
 <blockquote>
-<ul class="simple">
+<div><ul class="simple">
 <li><tt class="docutils literal"><span class="pre">Application</span></tt>, <tt class="docutils literal"><span class="pre">Web</span> <span class="pre">Application</span></tt>, <tt class="docutils literal"><span class="pre">Web</span> <span class="pre">app</span></tt>: An HTTP based application; commonly written with PHP, Django, Ruby on Rails, ASP.NET, and Java servlets.</li>
 <li><tt class="docutils literal"><span class="pre">Browser</span></tt>, <tt class="docutils literal"><span class="pre">Client</span></tt>: Firefox, IE, Chrome, Safari, Opera, or some variant.</li>
 <li><tt class="docutils literal"><span class="pre">Webhook</span></tt>, <tt class="docutils literal"><span class="pre">HTTP</span> <span class="pre">callback</span></tt>: A HTTP request made from Hookbox to the Web app when various events occur on the Hookbox server.</li>
 </ul>
-</blockquote>
+</div></blockquote>
 </div>
 <div class="section" id="common-patterns">
 <span id="intro-common-patterns"></span><h2>Common Patterns<a class="headerlink" href="#common-patterns" title="Permalink to this headline">¶</a></h2>
-<p>Hookbox is built around the concept of named <a class="reference external" href="channels.html"><em>Channels</em></a> which are extremely flexible. These channels can be configured by the web application to provide many features out of the box. Here are a few typical patterns:</p>
+<p>Hookbox is built around the concept of named <a class="reference internal" href="channels.html"><em>Channels</em></a> which are extremely flexible. These channels can be configured by the web application to provide many features out of the box. Here are a few typical patterns:</p>
 <div class="section" id="real-time-graph-time-series">
 <h3>Real-time graph (time series)<a class="headerlink" href="#real-time-graph-time-series" title="Permalink to this headline">¶</a></h3>
 <p>When a user connects to a web page with a real-time, time series graph, that user needs access to the last N data points on the graph. After that, the user needs updates on an interval. Lets say that we want to build a graph that shows a new data point every second, and always shows the last 30 seconds of data. Firstly, we enable a history on the channel with:</p>
@@ -231,8 +232,8 @@
 </div>
 
                 <div class="doc_copyright">
-                    &copy; Copyright 2010, Michael Carter.
-                    Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+                    &copy; Copyright 2010-2012, Michael Carter.
+                    Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
                 </div>
             </div>
         

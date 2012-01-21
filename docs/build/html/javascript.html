@@ -7,7 +7,7 @@
         
         <title>
     Javascript API
- &mdash; hookbox v0.2.0 documentation</title>
+ &mdash; hookbox 0.3.4 documentation</title>
         
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/docs.css" type="text/css" />
@@ -15,17 +15,18 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
           URL_ROOT:    '#',
-          VERSION:     '0.2.0',
+          VERSION:     '0.3.4',
           COLLAPSE_MODINDEX: false,
           FILE_SUFFIX: '.html'
       };
     </script>
         <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
         <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="_static/init.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="hookbox v0.2.0 documentation" href="index.html" />
+    <link rel="top" title="hookbox 0.3.4 documentation" href="index.html" />
         <link rel="next" title="Webhooks" href="webhooks.html" />
         <link rel="prev" title="Channels" href="channels.html" />
     
@@ -37,7 +38,7 @@
 
 
 
-        <h1>hookbox v0.2.0 documentation</h1>
+        <h1>hookbox 0.3.4 documentation</h1>
 
         <div id="search">
         Search:
@@ -49,7 +50,7 @@
         </div>
 
         <div class="versionheader">
-            Version: <span class="versionnum">0.2.0</span> Last Updated: None
+            Version: <span class="versionnum">0.3.4</span> Last Updated: Jan 21, 2012
         </div>
         <div class="clearboth"></div>
 
@@ -83,16 +84,16 @@
                 </h2>
             </div>
                 <ul>
-<li><a class="reference external" href="#">Javascript API</a><ul>
-<li><a class="reference external" href="#connecting">Connecting</a></li>
-<li><a class="reference external" href="#disconnecting">Disconnecting</a></li>
-<li><a class="reference external" href="#subscribing-to-channels">Subscribing to Channels</a></li>
-<li><a class="reference external" href="#interacting-with-channels">Interacting with Channels</a><ul>
-<li><a class="reference external" href="#channel-attributes">Channel Attributes</a></li>
-<li><a class="reference external" href="#presence-information">Presence Information</a></li>
-<li><a class="reference external" href="#publishing">Publishing</a></li>
-<li><a class="reference external" href="#state">State</a></li>
-<li><a class="reference external" href="#unsubscribing">Unsubscribing</a></li>
+<li><a class="reference internal" href="#">Javascript API</a><ul>
+<li><a class="reference internal" href="#connecting">Connecting</a></li>
+<li><a class="reference internal" href="#disconnecting">Disconnecting</a></li>
+<li><a class="reference internal" href="#subscribing-to-channels">Subscribing to Channels</a></li>
+<li><a class="reference internal" href="#interacting-with-channels">Interacting with Channels</a><ul>
+<li><a class="reference internal" href="#channel-attributes">Channel Attributes</a></li>
+<li><a class="reference internal" href="#presence-information">Presence Information</a></li>
+<li><a class="reference internal" href="#publishing">Publishing</a></li>
+<li><a class="reference internal" href="#state">State</a></li>
+<li><a class="reference internal" href="#unsubscribing">Unsubscribing</a></li>
 </ul>
 </li>
 </ul>
@@ -152,7 +153,7 @@
 </div>
 <p>All attributes are read only. The complete list:</p>
 <blockquote>
-<ul class="simple">
+<div><ul class="simple">
 <li><tt class="docutils literal"><span class="pre">historySize</span></tt>: the length of the history for the channel.</li>
 <li><tt class="docutils literal"><span class="pre">history</span></tt>: a list of the last N elements where N is the <tt class="docutils literal"><span class="pre">history_size</span></tt> attribute of the channel</li>
 <li><tt class="docutils literal"><span class="pre">state</span></tt>: arbitrary (json) data set on the channel by the web application. This attribute updates automatically when the web application changes it, and an onState callback is issued on the subscription.</li>
@@ -160,7 +161,7 @@
 <li><tt class="docutils literal"><span class="pre">presence</span></tt>: a list of users subscribed to the channel. This is always empty if <tt class="docutils literal"><span class="pre">presenceful</span></tt> is false.</li>
 <li><tt class="docutils literal"><span class="pre">reflective</span></tt>: boolean signifying if this channel reflects publish frames back to the connection that orignated them.</li>
 </ul>
-</blockquote>
+</div></blockquote>
 </div>
 <div class="section" id="presence-information">
 <h3>Presence Information<a class="headerlink" href="#presence-information" title="Permalink to this headline">¶</a></h3>
@@ -242,8 +243,8 @@
 </div>
 
                 <div class="doc_copyright">
-                    &copy; Copyright 2010, Michael Carter.
-                    Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+                    &copy; Copyright 2010-2012, Michael Carter.
+                    Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
                 </div>
             </div>
         

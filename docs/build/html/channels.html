@@ -7,7 +7,7 @@
         
         <title>
     Channels
- &mdash; hookbox v0.2.0 documentation</title>
+ &mdash; hookbox 0.3.4 documentation</title>
         
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/docs.css" type="text/css" />
@@ -15,17 +15,18 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
           URL_ROOT:    '#',
-          VERSION:     '0.2.0',
+          VERSION:     '0.3.4',
           COLLAPSE_MODINDEX: false,
           FILE_SUFFIX: '.html'
       };
     </script>
         <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
         <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="_static/init.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="hookbox v0.2.0 documentation" href="index.html" />
+    <link rel="top" title="hookbox 0.3.4 documentation" href="index.html" />
         <link rel="next" title="Javascript API" href="javascript.html" />
         <link rel="prev" title="Tutorial" href="tutorial.html" />
     
@@ -37,7 +38,7 @@
 
 
 
-        <h1>hookbox v0.2.0 documentation</h1>
+        <h1>hookbox 0.3.4 documentation</h1>
 
         <div id="search">
         Search:
@@ -49,7 +50,7 @@
         </div>
 
         <div class="versionheader">
-            Version: <span class="versionnum">0.2.0</span> Last Updated: None
+            Version: <span class="versionnum">0.3.4</span> Last Updated: Jan 21, 2012
         </div>
         <div class="clearboth"></div>
 
@@ -83,11 +84,11 @@
                 </h2>
             </div>
                 <ul>
-<li><a class="reference external" href="#">Channels</a><ul>
-<li><a class="reference external" href="#overview">Overview</a></li>
-<li><a class="reference external" href="#getting-data-out-of-a-channel">Getting Data out of a Channel</a></li>
-<li><a class="reference external" href="#putting-data-into-channels">Putting Data into Channels</a></li>
-<li><a class="reference external" href="#channel-properties">Channel Properties</a></li>
+<li><a class="reference internal" href="#">Channels</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
+<li><a class="reference internal" href="#getting-data-out-of-a-channel">Getting Data out of a Channel</a></li>
+<li><a class="reference internal" href="#putting-data-into-channels">Putting Data into Channels</a></li>
+<li><a class="reference internal" href="#channel-properties">Channel Properties</a></li>
 </ul>
 </li>
 </ul>
@@ -102,9 +103,9 @@
 <span id="channels-toplevel"></span><h1>Channels<a class="headerlink" href="#channels" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
-<p>Hookbox is built around the concept channels which can be used as an abstraction for routing real-time communication between browers and your web application. These channels have many options, making them suitable for a multitude of basic types of applications. You need to consider the features needed by the real-time portion of your application, and adjust the channel options appropriately. You can read about some <a class="reference external" href="intro.html#intro-common-patterns"><em>Common Patterns</em></a> to find a good starting point for your application.</p>
-<p>Ultimately, your web application has complete control over these channels. A user may perform three actions on a channel, subsribing, publishing, or unsubscribing. Whenever a user attempts to perform an action on a channel, Hookbox will make a <a class="reference external" href="webhooks.html"><em>Webhook</em></a> call back to your application to obtain permission for the action by that user, or simply to notify your web application that the action took place.</p>
-<p>The application may itself perform any of these actions on a channel by using the <a class="reference external" href="json_rest.html"><em>REST API</em></a>; it may perform any action on behalf of any user, and it can even publish with arbitrary usernames. The application may additionally use the REST API to alter a channel&#8217;s state or options at any time.</p>
+<p>Hookbox is built around the concept channels which can be used as an abstraction for routing real-time communication between browers and your web application. These channels have many options, making them suitable for a multitude of basic types of applications. You need to consider the features needed by the real-time portion of your application, and adjust the channel options appropriately. You can read about some <a class="reference internal" href="intro.html#intro-common-patterns"><em>Common Patterns</em></a> to find a good starting point for your application.</p>
+<p>Ultimately, your web application has complete control over these channels. A user may perform three actions on a channel, subscribing, publishing, or unsubscribing. Whenever a user attempts to perform an action on a channel, Hookbox will make a <a class="reference internal" href="webhooks.html"><em>Webhook</em></a> call back to your application to obtain permission for the action by that user, or simply to notify your web application that the action took place.</p>
+<p>The application may itself perform any of these actions on a channel by using the <a class="reference internal" href="json_rest.html"><em>REST API</em></a>; it may perform any action on behalf of any user, and it can even publish with arbitrary usernames. The application may additionally use the REST API to alter a channel&#8217;s state or options at any time.</p>
 <p>Finally, the web application may sometimes perform actions on channels on behalf of a particular user when that user causes a webhook callback. For instance, a user might subscribe to the channel &#8216;foo&#8217;, which would result in a <tt class="docutils literal"><span class="pre">subscribe</span></tt> webhook to be issued. The web application may respond with the <tt class="docutils literal"><span class="pre">auto_subscribe</span></tt> directive in order to subscribe the user to another channel, such as &#8216;bar&#8217;.</p>
 <p>You can think of channels as three parts:</p>
 <ol class="arabic simple">
@@ -121,7 +122,7 @@
 </div>
 <div class="section" id="getting-data-out-of-a-channel">
 <h2>Getting Data out of a Channel<a class="headerlink" href="#getting-data-out-of-a-channel" title="Permalink to this headline">¶</a></h2>
-<p>The most common way to get data out of a channel is to simply subscribe with the <a class="reference external" href="javascript.html#javascript-subscribing"><em>Javascript API</em></a>. This method allows javascript code to attach a publish callback which will be invoked whenever a new message is published to the channel.</p>
+<p>The most common way to get data out of a channel is to simply subscribe with the <a class="reference internal" href="javascript.html#javascript-subscribing"><em>Javascript API</em></a>. This method allows javascript code to attach a publish callback which will be invoked whenever a new message is published to the channel.</p>
 </div>
 <div class="section" id="putting-data-into-channels">
 <h2>Putting Data into Channels<a class="headerlink" href="#putting-data-into-channels" title="Permalink to this headline">¶</a></h2>
@@ -130,6 +131,7 @@
 <h2>Channel Properties<a class="headerlink" href="#channel-properties" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><tt class="docutils literal"><span class="pre">history_size</span></tt>: the maximum number of entries in the channel history.</li>
+<li><tt class="docutils literal"><span class="pre">history_duration</span></tt>: the maximum seconds of duration of life in the channel history.</li>
 <li><tt class="docutils literal"><span class="pre">history</span></tt>: A list of events that have previously occurred on this channel. They may be Subscribe, Unsubscribe, or Publish events.</li>
 <li><tt class="docutils literal"><span class="pre">name</span></tt>: The name of the channel.</li>
 <li><tt class="docutils literal"><span class="pre">presenceful</span></tt>: A Boolean indicating whether presence information is shared with channel subscribers.</li>
@@ -154,8 +156,8 @@
 </div>
 
                 <div class="doc_copyright">
-                    &copy; Copyright 2010, Michael Carter.
-                    Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+                    &copy; Copyright 2010-2012, Michael Carter.
+                    Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
                 </div>
             </div>
         

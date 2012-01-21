@@ -7,7 +7,7 @@
         
         <title>
     Configuration
- &mdash; hookbox v0.2.0 documentation</title>
+ &mdash; hookbox 0.3.4 documentation</title>
         
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/docs.css" type="text/css" />
@@ -15,17 +15,18 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
           URL_ROOT:    '#',
-          VERSION:     '0.2.0',
+          VERSION:     '0.3.4',
           COLLAPSE_MODINDEX: false,
           FILE_SUFFIX: '.html'
       };
     </script>
         <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
         <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="_static/init.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="hookbox v0.2.0 documentation" href="index.html" />
+    <link rel="top" title="hookbox 0.3.4 documentation" href="index.html" />
         <link rel="next" title="Deployment" href="deployment.html" />
         <link rel="prev" title="JSON Rest Interface" href="json_rest.html" />
     
@@ -37,7 +38,7 @@
 
 
 
-        <h1>hookbox v0.2.0 documentation</h1>
+        <h1>hookbox 0.3.4 documentation</h1>
 
         <div id="search">
         Search:
@@ -49,7 +50,7 @@
         </div>
 
         <div class="versionheader">
-            Version: <span class="versionnum">0.2.0</span> Last Updated: None
+            Version: <span class="versionnum">0.3.4</span> Last Updated: Jan 21, 2012
         </div>
         <div class="clearboth"></div>
 
@@ -83,36 +84,36 @@
                 </h2>
             </div>
                 <ul>
-<li><a class="reference external" href="#">Configuration</a><ul>
-<li><a class="reference external" href="#basic-options">Basic Options</a><ul>
-<li><a class="reference external" href="#port-p-port">Port (-p, &#8211;port)</a></li>
-<li><a class="reference external" href="#interface-i-interface">Interface (-i, &#8211;interface)</a></li>
+<li><a class="reference internal" href="#">Configuration</a><ul>
+<li><a class="reference internal" href="#basic-options">Basic Options</a><ul>
+<li><a class="reference internal" href="#port-p-port">Port (-p, &#8211;port)</a></li>
+<li><a class="reference internal" href="#interface-i-interface">Interface (-i, &#8211;interface)</a></li>
 </ul>
 </li>
-<li><a class="reference external" href="#webhook-callback-options">Webhook Callback Options</a><ul>
-<li><a class="reference external" href="#callback-port-cbport">Callback Port (&#8211;cbport)</a></li>
-<li><a class="reference external" href="#callback-hostname-cbhost">Callback Hostname (&#8211;cbhost)</a></li>
-<li><a class="reference external" href="#callback-path-prefix-cbpath">Callback Path Prefix (&#8211;cbpath)</a></li>
-<li><a class="reference external" href="#callback-secret-token-s-webhook-secret">Callback Secret Token (-s, &#8211;webhook-secret)</a></li>
+<li><a class="reference internal" href="#webhook-callback-options">Webhook Callback Options</a><ul>
+<li><a class="reference internal" href="#callback-port-cbport">Callback Port (&#8211;cbport)</a></li>
+<li><a class="reference internal" href="#callback-hostname-cbhost">Callback Hostname (&#8211;cbhost)</a></li>
+<li><a class="reference internal" href="#callback-path-prefix-cbpath">Callback Path Prefix (&#8211;cbpath)</a></li>
+<li><a class="reference internal" href="#callback-secret-token-s-webhook-secret">Callback Secret Token (-s, &#8211;webhook-secret)</a></li>
 </ul>
 </li>
-<li><a class="reference external" href="#extended-callback-options">Extended Callback Options</a><ul>
-<li><a class="reference external" href="#connect-callback-path-cb-connect">Connect Callback Path (&#8211;cb-connect)</a></li>
-<li><a class="reference external" href="#disconnect-callback-path-cb-disconnect">Disconnect Callback Path (&#8211;cb-disconnect)</a></li>
-<li><a class="reference external" href="#create-channel-callback-path-cb-create-channel">Create Channel Callback Path (&#8211;cb-create_channel)</a></li>
-<li><a class="reference external" href="#destroy-channel-callback-path-cb-destroy-channel">Destroy Channel Callback Path (&#8211;cb-destroy_channel)</a></li>
-<li><a class="reference external" href="#subscribe-callback-path-cb-subscribe">Subscribe Callback Path (&#8211;cb-subscribe)</a></li>
-<li><a class="reference external" href="#unsubscribe-callback-path-cb-unsubscribe">Unsubscribe Callback Path (&#8211;cb-unsubscribe)</a></li>
-<li><a class="reference external" href="#publish-callback-path-cb-publish">Publish Callback Path (&#8211;cb-publish)</a></li>
-<li><a class="reference external" href="#cookie-identifier-c-cookie-identifier">Cookie Identifier (-c, &#8211;cookie-identifier)</a></li>
+<li><a class="reference internal" href="#extended-callback-options">Extended Callback Options</a><ul>
+<li><a class="reference internal" href="#connect-callback-path-cb-connect">Connect Callback Path (&#8211;cb-connect)</a></li>
+<li><a class="reference internal" href="#disconnect-callback-path-cb-disconnect">Disconnect Callback Path (&#8211;cb-disconnect)</a></li>
+<li><a class="reference internal" href="#create-channel-callback-path-cb-create-channel">Create Channel Callback Path (&#8211;cb-create_channel)</a></li>
+<li><a class="reference internal" href="#destroy-channel-callback-path-cb-destroy-channel">Destroy Channel Callback Path (&#8211;cb-destroy_channel)</a></li>
+<li><a class="reference internal" href="#subscribe-callback-path-cb-subscribe">Subscribe Callback Path (&#8211;cb-subscribe)</a></li>
+<li><a class="reference internal" href="#unsubscribe-callback-path-cb-unsubscribe">Unsubscribe Callback Path (&#8211;cb-unsubscribe)</a></li>
+<li><a class="reference internal" href="#publish-callback-path-cb-publish">Publish Callback Path (&#8211;cb-publish)</a></li>
+<li><a class="reference internal" href="#cookie-identifier-c-cookie-identifier">Cookie Identifier (-c, &#8211;cookie-identifier)</a></li>
 </ul>
 </li>
-<li><a class="reference external" href="#api-options">API Options</a><ul>
-<li><a class="reference external" href="#api-secret-r-api-security-token">API Secret (-r, &#8211;api-security-token)</a></li>
+<li><a class="reference internal" href="#api-options">API Options</a><ul>
+<li><a class="reference internal" href="#api-secret-r-api-security-token">API Secret (-r, &#8211;api-security-token)</a></li>
 </ul>
 </li>
-<li><a class="reference external" href="#admin-options">Admin Options</a><ul>
-<li><a class="reference external" href="#admin-password-a-admin-password">Admin Password (-a, &#8211;admin-password)</a></li>
+<li><a class="reference internal" href="#admin-options">Admin Options</a><ul>
+<li><a class="reference internal" href="#admin-password-a-admin-password">Admin Password (-a, &#8211;admin-password)</a></li>
 </ul>
 </li>
 </ul>
@@ -228,8 +229,8 @@
 </div>
 
                 <div class="doc_copyright">
-                    &copy; Copyright 2010, Michael Carter.
-                    Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.4.
+                    &copy; Copyright 2010-2012, Michael Carter.
+                    Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
                 </div>
             </div>
         

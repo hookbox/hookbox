@@ -216,6 +216,7 @@ Server Replies:
                         }
                     ]
                 ], 
+                "history_duration": 0,
                 "history_size": 5, 
                 "moderated": false, 
                 "moderated_publish": true, 
@@ -251,6 +252,7 @@ Optional Form Variables:
 
 * ``anonymous``: json boolean
 * ``history``: json list in the proper history format
+* ``history_duration``: json integer
 * ``history_size``: json integer
 * ``moderated``: json boolean
 * ``moderated_publish``: json boolean
@@ -437,7 +439,8 @@ Server Replies:
             "name": "mcarter",
             "options": {
                 "reflective": true,
-                "moderated_message": true
+                "moderated_message": true,
+                "per_connection_subscriptions": false
             }
         }
     ]
@@ -446,7 +449,7 @@ Server Replies:
 set_user_options
 ===================
 
-Set the options on a user.
+Set the options for a user.
 
 Required Form Variables:
 
@@ -455,8 +458,9 @@ Required Form Variables:
 
 Optional Form Variables:
 
-* ``reflective``: json boolean
-* ``moderated_message``: json boolean
+* ``reflective``: json boolean - if true, private messages sent by this user will also be sent back to the user
+* ``moderated_message``: json boolean - if true, private messages sent by this user will call the message webhook
+* ``per_connection_subscriptions``: json boolean - if true, only the user connection (or connections) that sends a subscribe frame will be subscribed to the specified channel. Otherwise, all of a user's connections will share channel subscriptions established by any of the connections. 
 
 Example:
 
@@ -474,3 +478,45 @@ Server Replies:
     [ true, {} ]
 
 The ``reflective`` of the user is now `false`.
+
+get_server_info
+================
+
+Returns all current users and connections of the server.
+
+Required Form Variables:
+
+* ``security_token``: The password specified in the config as ``-r`` or ``--api-security-token``.
+
+Returns json:
+
+[ success (boolean) , details (object) ]
+
+Example:
+
+Client Requests URL:
+
+.. sourcecode:: none
+
+    /web/get_server_info?security_token=yo
+
+
+Server Replies:
+
+
+.. sourcecode:: javascript
+
+    [
+        true,
+        {
+            "channels": [
+                "testing",
+                "testing2"
+            ],
+            "connections": [
+                "467412414c294f1a9d1759ace01455d9",
+                "759ace01455d9467412414c294f1a9d1",
+                "14c294f1a9d1759ace01455d94674124"
+            ]
+        }
+    ]
