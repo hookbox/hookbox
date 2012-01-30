@@ -45,9 +45,20 @@ Channel Properties
 =============================
 
 * ``history_size``: the maximum number of entries in the channel history.
+* ``history_duration``: the maximum seconds of duration of life in the channel history.
 * ``history``: A list of events that have previously occurred on this channel. They may be Subscribe, Unsubscribe, or Publish events.
+* ``history_publish_only``: A Boolean to indicate that only Publish events are in the history.
 * ``name``: The name of the channel.
 * ``presenceful``: A Boolean indicating whether presence information is shared with channel subscribers.
 * ``moderated``: If true, any action will cause a Webhook callback.
+* ``moderated_publish``: If true, Publish will cause a Webhook callback. 
+* ``moderated_subscribe``: If true, Subscribe will cause a Webhook callback.
+* ``moderated_unsubscribe``: If true, Unsubscribe will cause a Webhook callback.
+* ``reflective``:  messages sent to this channel  will also be sent back to the sender
+* ``server_presenceful``: Needs to know about server presence
+* ``server_user_presence``: A list of ,
+* ``anonymous``: messages sent to this channel will not contain user information
+* ``polling``: A dictionary containing the values ``mode``: "", ``interval``: 5.0, ``url``: "", ``form``: {}, ``originator``: ""
+* ``state``: {}
 * TODO: etc.
 
