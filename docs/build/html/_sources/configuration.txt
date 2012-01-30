@@ -40,6 +40,18 @@ Callback Secret Token (-s, --webhook-secret)
 --------------------------------------------
 If a secret token is provided, all callbacks with include that token value as the form variable "secret"; this is useful for blocking unauthorized requests to the callback urls. The secret is specified by -s SECRET or --webhook-secret=SECRET; the default is null (no secret.)
 
+Callback Hookbox Version (--cbsendhookboxversion)
+-------------------------------------------------
+Send hookbox version info to webhook callbacks using X-Hookbox-Version header.
+
+Callback via Https (--cbhttps)
+-------------------------------------------------
+Use https (instead of http) to make callbacks.
+
+Callback Add Trailing slash (--cbtrailingslash)
+-------------------------------------------------
+Append a trailing slash to the callback URL if there is none.
+
 Extended Callback Options
 =========================
 
@@ -85,6 +97,14 @@ Hookbox will include all user cookies in any user-triggered webhook callback. Th
 
 API Options
 ============
+
+Web API Port (-w, --web-api-port)
+---------------------------------
+Optionally bind web api listening socket to a different port, (default:none)
+
+Web API Interface (-W, --web-api-interface)
+-------------------------------------------
+Optionally bind web api listening socket to a different interface, (default: none)
 
 API Secret (-r, --api-security-token)
 -------------------------------------

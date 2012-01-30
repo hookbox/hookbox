@@ -8,6 +8,8 @@ import sys
 from hookbox.config import HookboxConfig
 import hookbox.log as log
 
+from eventlet import hubs # dlg test of alternate hub
+
 def create_server(bound_socket, bound_api_socket, config, outputter):
     server = HookboxServer(bound_socket, bound_api_socket, config, outputter)
     return server
@@ -21,6 +23,7 @@ def run_objgraph(server, config):
         sys.exit(0)
 
 def main(bound_socket=None, bound_api_socket=None):
+    hubs.use_hub("pyevent") # dlg test of alternate hub
     config = HookboxConfig()
     config.update_from_commandline_arguments(sys.argv)
     log.setup_logging(config)

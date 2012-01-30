@@ -17,11 +17,15 @@ class Channel(object):
         'reflective': True,
         'history': [],
         'history_size': 0,
+        'history_duration': 0,
+        'history_publish_only': False,
         'moderated': True,
         'moderated_publish': False,
         'moderated_subscribe': False,
         'moderated_unsubscribe': False,
         'presenceful': False,
+        'server_presenceful': False,
+        'server_user_presence': [],
         'anonymous': False,
         'polling': {
             'mode': "",
@@ -45,15 +49,7 @@ class Channel(object):
         #print 'self._options is', self._options
         self.state = {}
         self.update_options(**self._options)
-        self.update_options(**options)
-
-    def user_disconnected(self, user):
-        # TODO: remove this pointless check, it should never happen, right?
-        if user not in self.subscribers:
-            return
-        self.unsubscribe(user, needs_auth=True, force_auth=True)
-
-        
+        self.update_options(**options)       
 
     def set_history(self, history):
         self.history = history
@@ -62,6 +58,13 @@ class Channel(object):
     def prune_history(self):
         while len(self.history) > self.history_size:
             self.history.pop(0)
+        if self.history_duration > 0:
+            limit = (datetime.datetime.now() - \
+                     datetime.timedelta(seconds=self.history_duration))
+            limit_str = limit.strftime('%Y-%m-%dT%H:%M:%S')
+            while len(self.history) > 0 and \
+                      self.history[0][1]['datetime'] < limit_str:
+                self.history.pop(0)
 
     def update_options(self, notify_polling=True, **options):
         # TODO: this can't remain so generic forever. At some point we need
@@ -163,9 +166,14 @@ class Channel(object):
             encoded_payload = json.loads(payload)
         except:
             raise ExpectedException("Invalid json for payload")
-        payload = encoded_payload
+        payload, options = encoded_payload, {}
         if needs_auth and (self.moderated or self.moderated_publish):
             form = { 'channel_name': self.name, 'payload': json.dumps(encoded_payload) }
+            if not self.anonymous:
+                if 'originator' in kwargs:
+                    form['originator'] = kwargs['originator']
+                else:
+                    form['originator'] = user.get_name()
             success, options = self.server.http_request('publish', user.get_cookie(conn), form, conn=conn)
             self.server.maybe_auto_subscribe(user, options, conn=conn)
             if not success:
@@ -183,8 +191,13 @@ class Channel(object):
         omit = None
         if not self.reflective:
             omit = conn
-        for subscriber in self.subscribers:
-            subscriber.send_frame('PUBLISH', frame, omit=omit)
+
+        if options.get('only_to_sender', False):
+            user.send_frame('PUBLISH', frame, omit=omit, channel=self)
+        else:
+            for subscriber in self.subscribers:
+                subscriber.send_frame('PUBLISH', frame, omit=omit, channel=self)
+
         self.server.admin.channel_event('publish', self.name, frame)
         if self.history_size:
             del frame['channel_name']
@@ -192,8 +205,8 @@ class Channel(object):
             self.prune_history()
 
     def subscribe(self, user, conn=None, needs_auth=True):
-
         if user in self.subscribers:
+            user.channel_subscribed(self, conn=conn)
             return
 
         has_initial_data = False
@@ -211,23 +224,23 @@ class Channel(object):
             
         if has_initial_data or self.history:
             frame = dict(channel_name=self.name, history=self.history, initial_data=initial_data)
-            user.send_frame('CHANNEL_INIT', frame)
+            user.send_frame('CHANNEL_INIT', frame, channel=self)
 
         self.subscribers.append(user)
-        user.channel_subscribed(self)
+        user.channel_subscribed(self, conn=conn)
         _now = get_now()
         frame = {"channel_name": self.name, "user": user.get_name(), "datetime": _now}
         self.server.admin.channel_event('subscribe', self.name, frame)
         if self.presenceful:
             for subscriber in self.subscribers:
                 if subscriber == user: continue
-                subscriber.send_frame('SUBSCRIBE', frame)
+                subscriber.send_frame('SUBSCRIBE', frame, channel=self)
                 
         frame = self._build_subscribe_frame(user, initial_data)
         
-        user.send_frame('SUBSCRIBE', frame)
+        user.send_frame('SUBSCRIBE', frame, channel=self)
             
-        if self.history_size:
+        if self.history_size and not self.history_publish_only:
             self.history.append(('SUBSCRIBE', {"user": user.get_name(), "datetime": _now }))
             self.prune_history()
 
@@ -242,7 +255,18 @@ class Channel(object):
             return
         self.state[key] = val
         self.state_broadcast(updates={ key: val })
-    
+
+    def state_multi_set(self, state):
+        #Set multiple state values at once
+        updates = {}
+        for k,v in state.iteritems():
+            if k in self.state and self.state[k]==v:
+                pass
+            else:
+                self.state[k] = v
+                updates[k] = v
+        self.state_broadcast(updates=updates)
+
     def state_broadcast(self, updates={}, deletes=[]):
         frame = { 
             "channel_name": self.name, 
@@ -250,7 +274,7 @@ class Channel(object):
             "deletes": deletes 
         }
         for subscriber in self.subscribers:
-            subscriber.send_frame('STATE_UPDATE', frame)
+            subscriber.send_frame('STATE_UPDATE', frame, channel=self)
 
     # TODO: We can do much better than this with a recursive json diffing
     #       algorithm. This is good enough for now...
@@ -289,6 +313,7 @@ class Channel(object):
         frame = {"channel_name": self.name, "user": user.get_name()}
         frame["history"] = self.history
         frame["history_size"] = self.history_size
+        frame["history_duration"] = self.history_duration
         frame["state"] = self.state
         if self.presenceful:
             frame['presence'] = [ subscriber.get_name() for subscriber in self.subscribers ]
@@ -296,7 +321,7 @@ class Channel(object):
             frame['presence'] = [];
         return frame
 
-    def unsubscribe(self, user, conn=None, needs_auth=True, force_auth=False):
+    def unsubscribe(self, user, conn=None, needs_auth=True, force_auth=False, destroy_empty=True):
         if user not in self.subscribers:
             return
         if needs_auth and (self.moderated or self.moderated_unsubscribe):
@@ -315,16 +340,19 @@ class Channel(object):
         if self.presenceful:
             for subscriber in self.subscribers:
                 if subscriber == user: continue
-                subscriber.send_frame('UNSUBSCRIBE', frame)
-        user.send_frame('UNSUBSCRIBE', frame)
-        self.subscribers.remove(user)
+                subscriber.send_frame('UNSUBSCRIBE', frame, channel=self)
+        user.send_frame('UNSUBSCRIBE', frame, channel=self)
+        try:
+            self.subscribers.remove(user)
+        except ValueError: # Maybe this user are no more subscribed.
+            pass
         user.channel_unsubscribed(self)
-        if self.history_size:
+        if self.history_size and not self.history_publish_only:
             del frame['channel_name']
             self.history.append(('UNSUBSCRIBE', frame))
             self.prune_history()
         
-        if not self.subscribers:
+        if not self.subscribers and destroy_empty:
             self.server.destroy_channel(self.name)
     
     def destroy(self, needs_auth=True):
@@ -338,7 +366,7 @@ class Channel(object):
         if success:
             self.presenceful=False # Don't send out all unsubscribes to all users
             for user in self.subscribers:
-                self.unsubscribe(user, needs_auth=needs_auth, force_auth=True)
+                self.unsubscribe(user, needs_auth=needs_auth, force_auth=True, destroy_empty=False)
         return success
         
     def serialize(self):

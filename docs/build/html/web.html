@@ -7,7 +7,7 @@
         
         <title>
     Web/HTTP Interface
- &mdash; hookbox v0.2.0 documentation</title>
+ &mdash; hookbox 0.3.4 documentation</title>
         
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/docs.css" type="text/css" />
@@ -15,17 +15,18 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
           URL_ROOT:    '#',
-          VERSION:     '0.2.0',
+          VERSION:     '0.3.4',
           COLLAPSE_MODINDEX: false,
           FILE_SUFFIX: '.html'
       };
     </script>
         <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
         <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="_static/init.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="hookbox v0.2.0 documentation" href="index.html" />
+    <link rel="top" title="hookbox 0.3.4 documentation" href="index.html" />
         <link rel="next" title="JSON Rest Interface" href="json_rest.html" />
         <link rel="prev" title="Webhooks" href="webhooks.html" />
     
@@ -37,7 +38,7 @@
 
 
 
-        <h1>hookbox v0.2.0 documentation</h1>
+        <h1>hookbox 0.3.4 documentation</h1>
 
         <div id="search">
         Search:
@@ -49,7 +50,7 @@
         </div>
 
         <div class="versionheader">
-            Version: <span class="versionnum">0.2.0</span> Last Updated: None
+            Version: <span class="versionnum">0.3.4</span> Last Updated: Jan 31, 2012
         </div>
         <div class="clearboth"></div>
 
@@ -83,17 +84,21 @@
                 </h2>
             </div>
                 <ul>
-<li><a class="reference external" href="#">Web/HTTP Interface</a><ul>
-<li><a class="reference external" href="#publish">publish</a></li>
-<li><a class="reference external" href="#subscribe">subscribe</a></li>
-<li><a class="reference external" href="#unsubscribe">unsubscribe</a></li>
-<li><a class="reference external" href="#get-channel-info">get_channel_info</a></li>
-<li><a class="reference external" href="#set-channel-options">set_channel_options</a></li>
-<li><a class="reference external" href="#create-channel">create_channel</a></li>
-<li><a class="reference external" href="#destroy-channel">destroy_channel</a></li>
-<li><a class="reference external" href="#state-set-key">state_set_key</a></li>
-<li><a class="reference external" href="#state-delete-key">state_delete_key</a></li>
-<li><a class="reference external" href="#set-config">set_config</a></li>
+<li><a class="reference internal" href="#">Web/HTTP Interface</a><ul>
+<li><a class="reference internal" href="#publish">publish</a></li>
+<li><a class="reference internal" href="#subscribe">subscribe</a></li>
+<li><a class="reference internal" href="#unsubscribe">unsubscribe</a></li>
+<li><a class="reference internal" href="#message">message</a></li>
+<li><a class="reference internal" href="#get-channel-info">get_channel_info</a></li>
+<li><a class="reference internal" href="#set-channel-options">set_channel_options</a></li>
+<li><a class="reference internal" href="#create-channel">create_channel</a></li>
+<li><a class="reference internal" href="#destroy-channel">destroy_channel</a></li>
+<li><a class="reference internal" href="#state-set-key">state_set_key</a></li>
+<li><a class="reference internal" href="#state-delete-key">state_delete_key</a></li>
+<li><a class="reference internal" href="#set-config">set_config</a></li>
+<li><a class="reference internal" href="#get-user-info">get_user_info</a></li>
+<li><a class="reference internal" href="#set-user-options">set_user_options</a></li>
+<li><a class="reference internal" href="#get-server-info">get_server_info</a></li>
 </ul>
 </li>
 </ul>
@@ -105,7 +110,7 @@
             <div class="body">
                 
 <div class="section" id="web-http-interface">
-<h1>Web/HTTP Interface<a class="headerlink" href="#web-http-interface" title="Permalink to this headline">¶</a></h1>
+<span id="web-toplevel"></span><h1>Web/HTTP Interface<a class="headerlink" href="#web-http-interface" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="publish">
 <h2>publish<a class="headerlink" href="#publish" title="Permalink to this headline">¶</a></h2>
 <p>Publish a message to a channel.</p>
@@ -175,6 +180,30 @@
 </div>
 <p>And the user &#8220;mcarter&#8221; is unsubscribed from the channel &#8220;testing&#8221;.</p>
 </div>
+<div class="section" id="message">
+<h2>message<a class="headerlink" href="#message" title="Permalink to this headline">¶</a></h2>
+<p>Publish a message to a user.</p>
+<p>Required Form Variables:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">security_token</span></tt>: The password specified in the config as <tt class="docutils literal"><span class="pre">-r</span></tt> or <tt class="docutils literal"><span class="pre">--api-security-token</span></tt>.</li>
+<li><tt class="docutils literal"><span class="pre">sender_name</span></tt>: The user name of the message sender.</li>
+<li><tt class="docutils literal"><span class="pre">recipient_name</span></tt>: The user name of the message recipient.</li>
+<li><tt class="docutils literal"><span class="pre">payload</span></tt>: The json payload to send</li>
+</ul>
+<p>Returns json:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="p">[</span> <span class="nx">success</span> <span class="p">(</span><span class="kr">boolean</span><span class="p">)</span> <span class="p">,</span> <span class="nx">details</span> <span class="p">(</span><span class="nx">object</span><span class="p">)</span> <span class="p">]</span></pre></div>
+</div>
+<p>Example:</p>
+<p>Client Requests URL:</p>
+<div class="highlight-none"><div class="highlight"><pre>/web/message?security_token=yo&amp;sender_name=bob&amp;recipient_name=joe&amp;payload=[1, 2, &quot;foo&quot;]</pre></div>
+</div>
+<p>Server Replies:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="p">[</span> <span class="kc">true</span><span class="p">,</span> <span class="p">{}</span> <span class="p">]</span></pre></div>
+</div>
+<p>And the following message frame is sent to user &#8216;joe&#8217;:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="p">{</span> <span class="s2">&quot;sender&quot;</span><span class="o">:</span> <span class="s2">&quot;bob&quot;</span><span class="p">,</span> <span class="s2">&quot;recipient&quot;</span><span class="o">:</span> <span class="s2">&quot;joe&quot;</span><span class="p">,</span> <span class="s2">&quot;payload&quot;</span><span class="o">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;foo&quot;</span><span class="p">]</span> <span class="p">}</span></pre></div>
+</div>
+</div>
 <div class="section" id="get-channel-info">
 <h2>get_channel_info<a class="headerlink" href="#get-channel-info" title="Permalink to this headline">¶</a></h2>
 <p>Returns all settings and attributes of a channel.</p>
@@ -218,6 +247,7 @@
                     <span class="p">}</span>
                 <span class="p">]</span>
             <span class="p">],</span>
+            <span class="s2">&quot;history_duration&quot;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
             <span class="s2">&quot;history_size&quot;</span><span class="o">:</span> <span class="mi">5</span><span class="p">,</span>
             <span class="s2">&quot;moderated&quot;</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
             <span class="s2">&quot;moderated_publish&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
@@ -252,6 +282,7 @@
 <ul class="simple">
 <li><tt class="docutils literal"><span class="pre">anonymous</span></tt>: json boolean</li>
 <li><tt class="docutils literal"><span class="pre">history</span></tt>: json list in the proper history format</li>
+<li><tt class="docutils literal"><span class="pre">history_duration</span></tt>: json integer</li>
 <li><tt class="docutils literal"><span class="pre">history_size</span></tt>: json integer</li>
 <li><tt class="docutils literal"><span class="pre">moderated</span></tt>: json boolean</li>
 <li><tt class="docutils literal"><span class="pre">moderated_publish</span></tt>: json boolean</li>
@@ -355,6 +386,93 @@
 </div>
 <p>The callback host is now set to <tt class="docutils literal"><span class="pre">1.2.3.4</span></tt> and the port is now <tt class="docutils literal"><span class="pre">80</span></tt>.</p>
 </div>
+<div class="section" id="get-user-info">
+<h2>get_user_info<a class="headerlink" href="#get-user-info" title="Permalink to this headline">¶</a></h2>
+<p>Returns all settings and attributes of a user.</p>
+<p>Required Form Variables:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">security_token</span></tt>: The password specified in the config as <tt class="docutils literal"><span class="pre">-r</span></tt> or <tt class="docutils literal"><span class="pre">--api-security-token</span></tt>.</li>
+<li><tt class="docutils literal"><span class="pre">user_name</span></tt>: The target user.</li>
+</ul>
+<p>Returns json:</p>
+<p>[ success (boolean) , details (object) ]</p>
+<p>Example:</p>
+<p>Client Requests URL:</p>
+<div class="highlight-none"><div class="highlight"><pre>/web/get_user_info?security_token=yo&amp;user_name=mcarter</pre></div>
+</div>
+<p>Server Replies:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="p">[</span>
+    <span class="kc">true</span><span class="p">,</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;channels&quot;</span><span class="o">:</span> <span class="p">[</span>
+            <span class="s2">&quot;testing&quot;</span>
+        <span class="p">],</span>
+        <span class="s2">&quot;connections&quot;</span><span class="o">:</span> <span class="p">[</span>
+            <span class="s2">&quot;467412414c294f1a9d1759ace01455d9&quot;</span>
+        <span class="p">],</span>
+        <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;mcarter&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;options&quot;</span><span class="o">:</span> <span class="p">{</span>
+            <span class="s2">&quot;reflective&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+            <span class="s2">&quot;moderated_message&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+            <span class="s2">&quot;per_connection_subscriptions&quot;</span><span class="o">:</span> <span class="kc">false</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">]</span></pre></div>
+</div>
+</div>
+<div class="section" id="set-user-options">
+<h2>set_user_options<a class="headerlink" href="#set-user-options" title="Permalink to this headline">¶</a></h2>
+<p>Set the options for a user.</p>
+<p>Required Form Variables:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">security_token</span></tt>: The password specified in the config as <tt class="docutils literal"><span class="pre">-r</span></tt> or <tt class="docutils literal"><span class="pre">--api-security-token</span></tt>.</li>
+<li><tt class="docutils literal"><span class="pre">user_name</span></tt>: The target user.</li>
+</ul>
+<p>Optional Form Variables:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">reflective</span></tt>: json boolean - if true, private messages sent by this user will also be sent back to the user</li>
+<li><tt class="docutils literal"><span class="pre">moderated_message</span></tt>: json boolean - if true, private messages sent by this user will call the message webhook</li>
+<li><tt class="docutils literal"><span class="pre">per_connection_subscriptions</span></tt>: json boolean - if true, only the user connection (or connections) that sends a subscribe frame will be subscribed to the specified channel. Otherwise, all of a user&#8217;s connections will share channel subscriptions established by any of the connections.</li>
+</ul>
+<p>Example:</p>
+<p>Client Requests URL:</p>
+<div class="highlight-none"><div class="highlight"><pre>/web/set_user_options?security_token=yo&amp;user_name=mcarter&amp;reflective=false</pre></div>
+</div>
+<p>Server Replies:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="p">[</span> <span class="kc">true</span><span class="p">,</span> <span class="p">{}</span> <span class="p">]</span></pre></div>
+</div>
+<p>The <tt class="docutils literal"><span class="pre">reflective</span></tt> of the user is now <cite>false</cite>.</p>
+</div>
+<div class="section" id="get-server-info">
+<h2>get_server_info<a class="headerlink" href="#get-server-info" title="Permalink to this headline">¶</a></h2>
+<p>Returns all current users and connections of the server.</p>
+<p>Required Form Variables:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">security_token</span></tt>: The password specified in the config as <tt class="docutils literal"><span class="pre">-r</span></tt> or <tt class="docutils literal"><span class="pre">--api-security-token</span></tt>.</li>
+</ul>
+<p>Returns json:</p>
+<p>[ success (boolean) , details (object) ]</p>
+<p>Example:</p>
+<p>Client Requests URL:</p>
+<div class="highlight-none"><div class="highlight"><pre>/web/get_server_info?security_token=yo</pre></div>
+</div>
+<p>Server Replies:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="p">[</span>
+    <span class="kc">true</span><span class="p">,</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;channels&quot;</span><span class="o">:</span> <span class="p">[</span>
+            <span class="s2">&quot;testing&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;testing2&quot;</span>
+        <span class="p">],</span>
+        <span class="s2">&quot;connections&quot;</span><span class="o">:</span> <span class="p">[</span>
+            <span class="s2">&quot;467412414c294f1a9d1759ace01455d9&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;759ace01455d9467412414c294f1a9d1&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;14c294f1a9d1759ace01455d94674124&quot;</span>
+        <span class="p">]</span>
+    <span class="p">}</span>
+<span class="p">]</span></pre></div>
+</div>
+</div>
 </div>
 
             </div>
@@ -372,8 +490,8 @@
 </div>
 
                 <div class="doc_copyright">
-                    &copy; Copyright 2010, Michael Carter.
-                    Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.5.
+                    &copy; Copyright 2010-2012, Michael Carter.
+                    Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
                 </div>
             </div>
         

@@ -12,6 +12,7 @@ from paste import urlmap, urlparser
 eventlet.monkey_patch(all=False, socket=True, select=True)
 
 from restkit import Resource
+from restkit.globals import set_manager
 from restkit.manager.meventlet import EventletManager
 
 
@@ -34,6 +35,7 @@ try:
 except:
     import simplejson as json
 
+from __init__ import __version__
 
 class EmptyLogShim(object):
     def write(self, *args, **kwargs):
@@ -42,7 +44,6 @@ class EmptyLogShim(object):
 logger = logging.getLogger('hookbox')
 
 access_logger = logging.getLogger('access')
-    
 
 
 class HookboxServer(object):
@@ -56,27 +57,39 @@ class HookboxServer(object):
         self.base_host = config['cbhost']
         self.base_port = config['cbport']
         self.base_path = config['cbpath']
-            
+
         self._root_wsgi_app = urlmap.URLMap()
         self.csp = Listener()
         self._root_wsgi_app['/csp'] = self.csp
         self._root_wsgi_app['/ws'] = self._ws_wrapper
         self._ws_wsgi_app = eventlet.websocket.WebSocketWSGI(self._ws_wsgi_app)
-        
+
         static_path = os.path.join(os.path.split(os.path.abspath(__file__))[0], 'static')
         self._root_wsgi_app['/static'] = urlparser.StaticURLParser(static_path)
-        
+
         self.api = HookboxAPI(self, config)
         self._web_api_app = HookboxWebAPI(self.api)
 
-        
+
         self.admin = HookboxAdminApp(self, config, outputter)
         self._root_wsgi_app['/admin'] = self.admin
         self.channels = {}
         self.conns_by_cookie = {}
         self.conns = {}
         self.users = {}
-        self.manager = EventletManager(timeout=300, max_conn=300)
+
+        set_manager(EventletManager(timeout=300, max_conn=300))
+        self.user_channel_presence = {}
+        self._http = None
+        self._url = None
+        #connection hack to increase connection limit, linux only for now
+        try:
+            import resource
+            #get soft limit of max number of open files
+            self.max_conn = resource.getrlimit(resource.RLIMIT_NOFILE)[0]
+        except ImportError:
+            self.max_conn = 1024
+
 
     def _ws_wrapper(self, environ, start_response):
         environ['PATH_INFO'] = environ['SCRIPT_NAME'] + environ['PATH_INFO']
@@ -89,11 +102,19 @@ class HookboxServer(object):
         sock = SockWebSocketWrapper(ws)
         rtjp_conn = rtjp_eventlet.RTJPConnection(sock=sock)
         self._accept(rtjp_conn)
-        
+
     def run(self):
+        # dlg -- debugging backdoor hack
+        try:
+            import eventlet.backdoor
+            eventlet.spawn(eventlet.backdoor.backdoor_server, eventlet.listen(('localhost', 3000)), locals={'server':self})
+        except Exception:
+            logger.exception("Problem spawning debug backdoor")
+        # end debugging
+
         if not self._bound_socket:
             self._bound_socket = eventlet.listen((self.config.interface, self.config.port))
-        eventlet.spawn(eventlet.wsgi.server, self._bound_socket, self._root_wsgi_app, log=EmptyLogShim())
+        eventlet.spawn(eventlet.wsgi.server, self._bound_socket, self._root_wsgi_app, log=EmptyLogShim(), max_size=self.max_conn)
         
         # We can't get the main interface host, port from config, in case it
         # was passed in directly to the constructor as a bound sock.
@@ -107,8 +128,8 @@ class HookboxServer(object):
             if api_port is None: api_port = main_port
             if (main_host, main_port) != (api_host,  api_port):
                 self._bound_api_socket = eventlet.listen((api_host, api_port))
-                
-        # If we have a _bound_api_socket at this point, (either from constructor, 
+
+        # If we have a _bound_api_socket at this point, (either from constructor,
         # or previous block) we should turn it into a wsgi server.
         if self._bound_api_socket:
               logger.info("Listening to hookbox/webapi on http://%s:%s", *self._bound_api_socket.getsockname())
@@ -118,11 +139,11 @@ class HookboxServer(object):
               # Might as well expose it over / as well
               api_url_map['/'] = self._web_api_app
               eventlet.spawn(eventlet.wsgi.server, self._bound_api_socket, api_url_map, log=EmptyLogShim())
-              
+
         # otherwise, expose the web api over the main interface/wsgi app
         else:
             self._root_wsgi_app['/web'] = self._web_api_app
-        
+
         ev = eventlet.event.Event()
         self._rtjp_server.listen(sock=self.csp)
         eventlet.spawn(self._run, ev)
@@ -144,7 +165,7 @@ class HookboxServer(object):
                 if not rtjp_conn:
                     continue
                 access_logger.info("Incoming CSP connection\t%s\t%s",
-                    rtjp_conn._sock.environ.get('HTTP_X_FORWARDED_FOR', rtjp_conn._sock.environ.get('REMOTE_ADDR', '')), 
+                    rtjp_conn._sock.environ.get('HTTP_X_FORWARDED_FOR', rtjp_conn._sock.environ.get('REMOTE_ADDR', '')),
                     rtjp_conn._sock.environ.get('HTTP_HOST'))
                 eventlet.spawn(self._accept, rtjp_conn)
 #                conn = protocol.HookboxConn(self, rtjp_conn, self.config)
@@ -175,7 +196,7 @@ class HookboxServer(object):
             scheme = self.config["cbhttps"] and "https" or "http"
             host = self.config["cbhost"]
             port = self.config["cbport"]
-        
+
         if path_name:
             form['action'] = path_name
         if self.config['webhook_secret']:
@@ -204,10 +225,17 @@ class HookboxServer(object):
             headers['Cookie'] = cookie_string
         if conn:
             headers['X-Real-IP'] = conn.get_remote_addr()
+        if self.config["cbsendhookboxversion"]:
+            headers['X-Hookbox-Version'] = __version__
         body = None
         try:
             try:
-                http = Resource(url, manager=self.manager)
+                #check and change url if necessary
+                if self._url is None or self._url != url:
+                    self._http = Resource(url)
+                    self._url = url
+                http = self._http
+
                 response = http.request(method='POST', path=path, payload=form_body, headers=headers)
                 body = response.body_string()
             except socket.error, e:
@@ -215,9 +243,9 @@ class HookboxServer(object):
                     raise Exception("Connection refused for HTTP request to %s" % (url))
                 raise e
         except Exception, e:
-            print repr(e)
+            logger.warn('Caught error in http request %s' % repr(e))
             self.admin.webhook_event(path_name, url, 0, False, body, form_body, cookie_string, e)
-            logger.warn('Exception with webhook %s', url, exc_info=True)
+            logger.warn('Exception with webhook %s%s' % (url, path), exc_info=True)
             return False, { 'error': 'failure: %s' % (e,) }
         if response.status_int != 200:
             self.admin.webhook_event(path_name, url, response.status_int, False, body, form_body, cookie_string, "Invalid status")
@@ -252,21 +280,26 @@ class HookboxServer(object):
 
 #    def _webhook_error
 
-    def connect(self, conn):
-        form = { 'conn_id': conn.id }
+    def connect(self, conn, payload):
+        try:
+            decoded_payload = json.loads(payload)
+        except:
+            raise ExpectedException("Invalid json for payload")
+        form = { 'conn_id': conn.id, 'payload': json.dumps(decoded_payload) }
         success, options = self.http_request('connect', conn.get_cookie(), form, conn=conn)
         if not success:
             raise ExpectedException(options.get('error', 'Unauthorized'))
-        if 'name' not in options:
+        user_name = options.pop('name', None)
+        if not user_name:
             raise ExpectedException('Unauthorized (missing name parameter in server response)')
+        payload = options.pop('override_payload', payload)
         self.conns[conn.id] = conn
-        user = self.get_user(options['name'])
-        del options['name']
-        user.update_options(**options)
+        user = self.get_user(user_name)
+        user.update_options(**user.extract_valid_options(options))
         user.add_connection(conn)
         self.admin.user_event('connect', user.get_name(), conn.serialize())
         self.admin.connection_event('connect', conn.id, conn.serialize())
-        #print 'successfully connected', user.name
+        conn.send_frame('CONNECTED', { 'name': user.get_name(), 'payload': payload })
         eventlet.spawn(self.maybe_auto_subscribe, user, options, conn=conn)
 
     def disconnect(self, conn):
@@ -290,6 +323,9 @@ class HookboxServer(object):
         if name not in self.users:
             self.users[name] = User(self, name)
             self.admin.user_event('create', name, self.users[name].serialize())
+            if name in self.user_channel_presence:
+                for channel in self.user_channel_presence[name]:
+                    channel.state_set(name, True)
         return self.users[name]
 
     def remove_user(self, name):
@@ -304,8 +340,13 @@ class HookboxServer(object):
                 pass
             except Exception, e:
                 self.logger.warn("Unexpected error when removing user: %s", e, exc_info=True)
+
+            if name in self.user_channel_presence:
+                for channel in self.user_channel_presence[name]:
+                    channel.state_set(name, False)
         
     def create_channel(self, conn, channel_name, options={}, needs_auth=True):
+        local_options = options.copy()
         if channel_name in self.channels:
             raise ExpectedException("Channel already exists")
         if needs_auth:
@@ -315,10 +356,23 @@ class HookboxServer(object):
             }
             success, callback_options = self.http_request('create_channel', cookie_string, form)
             if success:
-                options.update(callback_options)
+                local_options.update(callback_options)
             else:
                 raise ExpectedException(callback_options.get('error', 'Unauthorized'))
-        chan = self.channels[channel_name] = channel.Channel(self, channel_name, **options)
+
+        chan = self.channels[channel_name] = channel.Channel(self, channel_name, **local_options)
+
+        #If channel needs to know about server presence, register channel with users
+        if chan.server_presenceful:
+            user_state = {}
+            for user in chan.server_user_presence:
+                user_state[user] = user in self.users
+                if user not in self.user_channel_presence:
+                    self.user_channel_presence[user] = [chan]
+                else:
+                    self.user_channel_presence[user].append(chan)
+            chan.state_multi_set(user_state)
+
         self.admin.channel_event('create_channel', channel_name, chan.serialize())
 
     def destroy_channel(self, channel_name, needs_auth=True):
@@ -326,6 +380,10 @@ class HookboxServer(object):
             return None
         channel = self.channels[channel_name]
         if channel.destroy(needs_auth):
+            if channel.server_presenceful:
+                for user in channel.server_user_presence:
+                    self.user_channel_presence[user].remove(channel)
+                
             del self.channels[channel_name]
             self.admin.channel_event('destroy_channel', channel_name, None)
 
@@ -339,12 +397,13 @@ class HookboxServer(object):
 
     def maybe_auto_subscribe(self, user, options, conn=None):
         #print 'maybe autosubscribe....'
+        use_conn = conn if conn else user
         for destination in options.get('auto_subscribe', ()):
             #print 'subscribing to', destination
-            channel = self.get_channel(user, destination)
+            channel = self.get_channel(use_conn, destination)
             channel.subscribe(user, conn=conn, needs_auth=False)
         for destination in options.get('auto_unsubscribe', ()):
-            channel = self.get_channel(user, destination)
+            channel = self.get_channel(use_conn, destination)
             channel.unsubscribe(user, conn=conn, needs_auth=False)
 
 
@@ -352,7 +411,7 @@ class HookboxServer(object):
 class SockWebSocketWrapper(object):
     def __init__(self, ws):
         self._ws = ws
-        
+
     def recv(self, num):
         # not quite right (ignore num)... but close enough for our use.
         data = self._ws.wait()
@@ -366,6 +425,6 @@ class SockWebSocketWrapper(object):
         
     def sendall(self, data):
         self.send(data)
-        
+
     def __getattr__(self, key):
         return getattr(self._ws, key)

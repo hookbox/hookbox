@@ -4,6 +4,62 @@
 Webhooks
 ==================
 
+publish
+=======
+
+Send a message to all users subscribed to a channel.
+
+Webhook Form Variables:
+
+* ``channel_name``: The name of the channel the message is being published to.
+* ``payload``: The json payload to send to all users subscribed to the channel.
+
+Webhook post includes sender cookies.
+
+Returns json:
+
+.. sourcecode:: javascript
+
+    [ success (boolean) , details (object) ]
+
+
+Optional Webhook return details:
+
+* ``override_payload``: A new payload that will be published instead of the original payload.
+* ``only_to_sender``: If true, the message will only be published to the sender instead of all the users subscribed the channel.
+* ``error``: If success is false, error text to return to sender.
+
+
+Example:
+
+Client Calls:
+
+.. sourcecode:: javascript
+
+    connection.publish("channel-1", { title: "a message", body: "some text" });
+
+
+Webhook Called With:
+
+.. sourcecode:: javascript
+
+    { channel_name: "channel-1", payload: { title: "a message", body: "some text" } }
+
+
+Webhook replies:
+
+.. sourcecode:: javascript
+
+    [ true, { } ]
+
+
+And the following frame is published all subscribers to the channel 'channel-1':
+
+.. sourcecode:: javascript
+
+    { channel_name: "channel-1", "payload": { title: "a message", body: "some text" } }
+
+
 message
 =======
 
