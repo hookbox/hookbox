@@ -50,7 +50,7 @@
         </div>
 
         <div class="versionheader">
-            Version: <span class="versionnum">0.3.4</span> Last Updated: Jan 21, 2012
+            Version: <span class="versionnum">0.3.4</span> Last Updated: Jan 31, 2012
         </div>
         <div class="clearboth"></div>
 
@@ -95,6 +95,9 @@
 <li><a class="reference internal" href="#callback-hostname-cbhost">Callback Hostname (&#8211;cbhost)</a></li>
 <li><a class="reference internal" href="#callback-path-prefix-cbpath">Callback Path Prefix (&#8211;cbpath)</a></li>
 <li><a class="reference internal" href="#callback-secret-token-s-webhook-secret">Callback Secret Token (-s, &#8211;webhook-secret)</a></li>
+<li><a class="reference internal" href="#callback-hookbox-version-cbsendhookboxversion">Callback Hookbox Version (&#8211;cbsendhookboxversion)</a></li>
+<li><a class="reference internal" href="#callback-via-https-cbhttps">Callback via Https (&#8211;cbhttps)</a></li>
+<li><a class="reference internal" href="#callback-add-trailing-slash-cbtrailingslash">Callback Add Trailing slash (&#8211;cbtrailingslash)</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#extended-callback-options">Extended Callback Options</a><ul>
@@ -109,6 +112,8 @@
 </ul>
 </li>
 <li><a class="reference internal" href="#api-options">API Options</a><ul>
+<li><a class="reference internal" href="#web-api-port-w-web-api-port">Web API Port (-w, &#8211;web-api-port)</a></li>
+<li><a class="reference internal" href="#web-api-interface-w-web-api-interface">Web API Interface (-W, &#8211;web-api-interface)</a></li>
 <li><a class="reference internal" href="#api-secret-r-api-security-token">API Secret (-r, &#8211;api-security-token)</a></li>
 </ul>
 </li>
@@ -161,6 +166,18 @@
 <h3>Callback Secret Token (-s, &#8211;webhook-secret)<a class="headerlink" href="#callback-secret-token-s-webhook-secret" title="Permalink to this headline">¶</a></h3>
 <p>If a secret token is provided, all callbacks with include that token value as the form variable &#8220;secret&#8221;; this is useful for blocking unauthorized requests to the callback urls. The secret is specified by -s SECRET or &#8211;webhook-secret=SECRET; the default is null (no secret.)</p>
 </div>
+<div class="section" id="callback-hookbox-version-cbsendhookboxversion">
+<h3>Callback Hookbox Version (&#8211;cbsendhookboxversion)<a class="headerlink" href="#callback-hookbox-version-cbsendhookboxversion" title="Permalink to this headline">¶</a></h3>
+<p>Send hookbox version info to webhook callbacks using X-Hookbox-Version header.</p>
+</div>
+<div class="section" id="callback-via-https-cbhttps">
+<h3>Callback via Https (&#8211;cbhttps)<a class="headerlink" href="#callback-via-https-cbhttps" title="Permalink to this headline">¶</a></h3>
+<p>Use https (instead of http) to make callbacks.</p>
+</div>
+<div class="section" id="callback-add-trailing-slash-cbtrailingslash">
+<h3>Callback Add Trailing slash (&#8211;cbtrailingslash)<a class="headerlink" href="#callback-add-trailing-slash-cbtrailingslash" title="Permalink to this headline">¶</a></h3>
+<p>Append a trailing slash to the callback URL if there is none.</p>
+</div>
 </div>
 <div class="section" id="extended-callback-options">
 <h2>Extended Callback Options<a class="headerlink" href="#extended-callback-options" title="Permalink to this headline">¶</a></h2>
@@ -200,6 +217,14 @@
 </div>
 <div class="section" id="api-options">
 <h2>API Options<a class="headerlink" href="#api-options" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="web-api-port-w-web-api-port">
+<h3>Web API Port (-w, &#8211;web-api-port)<a class="headerlink" href="#web-api-port-w-web-api-port" title="Permalink to this headline">¶</a></h3>
+<p>Optionally bind web api listening socket to a different port, (default:none)</p>
+</div>
+<div class="section" id="web-api-interface-w-web-api-interface">
+<h3>Web API Interface (-W, &#8211;web-api-interface)<a class="headerlink" href="#web-api-interface-w-web-api-interface" title="Permalink to this headline">¶</a></h3>
+<p>Optionally bind web api listening socket to a different interface, (default: none)</p>
+</div>
 <div class="section" id="api-secret-r-api-security-token">
 <h3>API Secret (-r, &#8211;api-security-token)<a class="headerlink" href="#api-secret-r-api-security-token" title="Permalink to this headline">¶</a></h3>
 <p>The external api interfaces are disabled by default and will only be enabled if an API secret is specified by -r SECRET or &#8211;api-security-token SECRET. The value specified must appear in the form as the value for the key &#8220;secret&#8221; when using the Web/HTTP Hookbox API.</p>

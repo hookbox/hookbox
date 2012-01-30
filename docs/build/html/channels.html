@@ -50,7 +50,7 @@
         </div>
 
         <div class="versionheader">
-            Version: <span class="versionnum">0.3.4</span> Last Updated: Jan 21, 2012
+            Version: <span class="versionnum">0.3.4</span> Last Updated: Jan 31, 2012
         </div>
         <div class="clearboth"></div>
 
@@ -133,9 +133,19 @@
 <li><tt class="docutils literal"><span class="pre">history_size</span></tt>: the maximum number of entries in the channel history.</li>
 <li><tt class="docutils literal"><span class="pre">history_duration</span></tt>: the maximum seconds of duration of life in the channel history.</li>
 <li><tt class="docutils literal"><span class="pre">history</span></tt>: A list of events that have previously occurred on this channel. They may be Subscribe, Unsubscribe, or Publish events.</li>
+<li><tt class="docutils literal"><span class="pre">history_publish_only</span></tt>: A Boolean to indicate that only Publish events are in the history.</li>
 <li><tt class="docutils literal"><span class="pre">name</span></tt>: The name of the channel.</li>
 <li><tt class="docutils literal"><span class="pre">presenceful</span></tt>: A Boolean indicating whether presence information is shared with channel subscribers.</li>
 <li><tt class="docutils literal"><span class="pre">moderated</span></tt>: If true, any action will cause a Webhook callback.</li>
+<li><tt class="docutils literal"><span class="pre">moderated_publish</span></tt>: If true, Publish will cause a Webhook callback.</li>
+<li><tt class="docutils literal"><span class="pre">moderated_subscribe</span></tt>: If true, Subscribe will cause a Webhook callback.</li>
+<li><tt class="docutils literal"><span class="pre">moderated_unsubscribe</span></tt>: If true, Unsubscribe will cause a Webhook callback.</li>
+<li><tt class="docutils literal"><span class="pre">reflective</span></tt>:  messages sent to this channel  will also be sent back to the sender</li>
+<li><tt class="docutils literal"><span class="pre">server_presenceful</span></tt>: Needs to know about server presence</li>
+<li><tt class="docutils literal"><span class="pre">server_user_presence</span></tt>: A list of ,</li>
+<li><tt class="docutils literal"><span class="pre">anonymous</span></tt>: messages sent to this channel will not contain user information</li>
+<li><tt class="docutils literal"><span class="pre">polling</span></tt>: A dictionary containing the values <tt class="docutils literal"><span class="pre">mode</span></tt>: &#8220;&#8221;, <tt class="docutils literal"><span class="pre">interval</span></tt>: 5.0, <tt class="docutils literal"><span class="pre">url</span></tt>: &#8220;&#8221;, <tt class="docutils literal"><span class="pre">form</span></tt>: {}, <tt class="docutils literal"><span class="pre">originator</span></tt>: &#8220;&#8221;</li>
+<li><tt class="docutils literal"><span class="pre">state</span></tt>: {}</li>
 <li>TODO: etc.</li>
 </ul>
 </div>
