@@ -74,7 +74,7 @@ def create_publisher():
 def main ():
     # create an http server bound to the host and port specified
     # and publish the Root instance.
-    run(create_publisher, host="0.0.0.0", port=8080)
+    run(create_publisher, host="0.0.0.0", port=8081)
 
 if __name__ == '__main__':
     main()
