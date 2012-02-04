@@ -33,9 +33,9 @@ import time, urllib, urllib2, json, random
 def main ():
 
     # assume the hookbox server is on localhost:2974    
-    url = "http://127.0.0.1:2974/rest/publish"
+    url = "http://127.0.0.1:2974/web/publish"
 
-    values = { "secret" : "altoids",
+    values = { "security_token" : "altoids",
                "channel_name" : "chan1",
                "payload" : []
              }
@@ -49,13 +49,14 @@ def main ():
         values["payload"] = random.sample(pop, 7)
         data = urllib.urlencode(values)
         req = urllib2.Request(url, data)
+        print data
+        print url
         resp = urllib2.urlopen(req)
-        # the hookbox response can be useful for debugging,
-        # but i'm commenting it out.
-        #page = resp.read()
-        #print page
+	# Print the server response. This is a demo, after all!
+        page = resp.read()
+        print page
         print values["payload"]
-        time.sleep(0.5)
+        time.sleep(0.1)
                 
 
 
