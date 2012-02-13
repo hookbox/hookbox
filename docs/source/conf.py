@@ -30,7 +30,8 @@ templates_path = ['_templates']
 # The suffix of source filenames.
 source_suffix = '.rst'
 
-template_bridge = "builder.builders.MakoBridge"
+#Uncomment this if you want the build the docs using the original template
+#template_bridge = "builder.builders.MakoBridge"
 
 # The encoding of source files.
 #source_encoding = 'utf-8'
