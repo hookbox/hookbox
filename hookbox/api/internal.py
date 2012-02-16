@@ -22,7 +22,10 @@ class HookboxAPI(object):
 
     def publish(self, channel_name, payload='null', originator=None, send_hook=False):
         if not self.server.exists_channel(channel_name):
-            raise ExpectedException("Channel %s doesn't exist" % (channel_name,))        
+            if not self.config.ignore_publish_non_existing_channels:
+                raise ExpectedException("Channel %s doesn't exist" % (channel_name,))        
+            else:
+                return
         channel = self.server.get_channel(None, channel_name)
         channel.publish(self, payload, needs_auth=send_hook, originator=originator)
 

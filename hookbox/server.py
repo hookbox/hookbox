@@ -247,6 +247,9 @@ class HookboxServer(object):
             self.admin.webhook_event(path_name, url, 0, False, body, form_body, cookie_string, e)
             logger.warn('Exception with webhook %s%s' % (url, path), exc_info=True)
             return False, { 'error': 'failure: %s' % (e,) }
+
+        logger.info("%s%s/%s ==> %s %s"%(url, path,form_body, response.status, body))
+
         if response.status_int != 200:
             self.admin.webhook_event(path_name, url, response.status_int, False, body, form_body, cookie_string, "Invalid status")
             raise ExpectedException("Invalid callback response, status=%s (%s), body: %s" % (response.status_int, path, body))
