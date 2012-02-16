@@ -159,7 +159,17 @@ HookBoxProtocol = Class([RTJPProtocol], function(supr) {
 	this.connectionMade = function() {
 		logger.debug('connectionMade');
 		this.transport.setEncoding('utf8');
-		this.sendFrame('CONNECT', { cookie_string: this.cookieString, payload: JSON.stringify(this._connectPayload) });
+                if (this.cookieString===''){
+                    //workaround for IE8 bug 
+                    //http://blogs.msdn.com/b/jscript/archive/2009/06/23/serializing-the-value-of-empty-dom-elements-using-native-json-in-ie8.aspx
+		    if (this._connectPayload===undefined){
+                        this.sendFrame('CONNECT', { cookie_string: '', payload: this._connectPayload});
+                    }else{
+		        this.sendFrame('CONNECT', { cookie_string: '', payload: JSON.stringify(this._connectPayload) });
+                    }
+                } else{
+		    this.sendFrame('CONNECT', { cookie_string: this.cookieString, payload: JSON.stringify(this._connectPayload) });
+                }
 	}
 
 	this.frameReceived = function(fId, fName, fArgs) {
