@@ -107,6 +107,7 @@ HookBoxProtocol = Class([RTJPProtocol], function(supr) {
 	// Public api
 	this.onOpen = function(args) { }
 	this.onClose = function(err, wasConnected) { }
+	this.onConnectionLost = function(reason) { }
 	this.onError = function(args) { }
 	this.onSubscribed = function(name, subscription) { }
 	this.onUnsubscribed = function(subscription, args) { }
@@ -239,7 +240,14 @@ HookBoxProtocol = Class([RTJPProtocol], function(supr) {
 		} else {
 			logger.debug('connectionLost');
 			this.connected = false;
-			this.onClose();
+			if (typeof(reason.type)=="string" && (reason.type=="ServerUnreachable" || reason.type=="ConnectionTimeout"))
+			{
+				this.onConnectionLost(reason.type);
+			}
+			else
+			{
+				this.onClose();
+			}
 		}
 	}
 
