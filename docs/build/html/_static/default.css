@@ -14,16 +14,16 @@
 /* -- page layout ----------------------------------------------------------- */
 
 body {
-    font-family: {{ theme_bodyfont }};
+    font-family: sans-serif;
     font-size: 100%;
-    background-color: {{ theme_footerbgcolor }};
+    background-color: #11303d;
     color: #000;
     margin: 0;
     padding: 0;
 }
 
 div.document {
-    background-color: {{ theme_sidebarbgcolor }};
+    background-color: #1c4e63;
 }
 
 div.documentwrapper {
@@ -32,23 +32,17 @@ div.documentwrapper {
 }
 
 div.bodywrapper {
-    margin: 0 0 0 {{ theme_sidebarwidth|toint }}px;
+    margin: 0 0 0 230px;
 }
 
 div.body {
-    background-color: {{ theme_bgcolor }};
-    color: {{ theme_textcolor }};
+    background-color: #ffffff;
+    color: #000000;
     padding: 0 20px 30px 20px;
 }
 
-{%- if theme_rightsidebar|tobool %}
-div.bodywrapper {
-    margin: 0 {{ theme_sidebarwidth|toint }}px 0 0;
-}
-{%- endif %}
-
 div.footer {
-    color: {{ theme_footertextcolor }};
+    color: #ffffff;
     width: 100%;
     padding: 9px 0 9px 0;
     text-align: center;
@@ -56,54 +50,26 @@ div.footer {
 }
 
 div.footer a {
-    color: {{ theme_footertextcolor }};
+    color: #ffffff;
     text-decoration: underline;
 }
 
 div.related {
-    background-color: {{ theme_relbarbgcolor }};
+    background-color: #133f52;
     line-height: 30px;
-    color: {{ theme_relbartextcolor }};
+    color: #ffffff;
 }
 
 div.related a {
-    color: {{ theme_relbarlinkcolor }};
+    color: #ffffff;
 }
 
 div.sphinxsidebar {
-    {%- if theme_stickysidebar|tobool %}
-    top: 30px;
-    bottom: 0;
-    margin: 0;
-    position: fixed;
-    overflow: auto;
-    height: auto;
-    {%- endif %}
-    {%- if theme_rightsidebar|tobool %}
-    float: right;
-    {%- if theme_stickysidebar|tobool %}
-    right: 0;
-    {%- endif %}
-    {%- endif %}
 }
-
-{%- if theme_stickysidebar|tobool %}
-/* this is nice, but it it leads to hidden headings when jumping
-   to an anchor */
-/*
-div.related {
-    position: fixed;
-}
-
-div.documentwrapper {
-    margin-top: 30px;
-}
-*/
-{%- endif %}
 
 div.sphinxsidebar h3 {
-    font-family: {{ theme_headfont }};
-    color: {{ theme_sidebartextcolor }};
+    font-family: 'Trebuchet MS', sans-serif;
+    color: #ffffff;
     font-size: 1.4em;
     font-weight: normal;
     margin: 0;
@@ -111,12 +77,12 @@ div.sphinxsidebar h3 {
 }
 
 div.sphinxsidebar h3 a {
-    color: {{ theme_sidebartextcolor }};
+    color: #ffffff;
 }
 
 div.sphinxsidebar h4 {
-    font-family: {{ theme_headfont }};
-    color: {{ theme_sidebartextcolor }};
+    font-family: 'Trebuchet MS', sans-serif;
+    color: #ffffff;
     font-size: 1.3em;
     font-weight: normal;
     margin: 5px 0 0 0;
@@ -124,7 +90,7 @@ div.sphinxsidebar h4 {
 }
 
 div.sphinxsidebar p {
-    color: {{ theme_sidebartextcolor }};
+    color: #ffffff;
 }
 
 div.sphinxsidebar p.topless {
@@ -134,35 +100,30 @@ div.sphinxsidebar p.topless {
 div.sphinxsidebar ul {
     margin: 10px;
     padding: 0;
-    color: {{ theme_sidebartextcolor }};
+    color: #ffffff;
 }
 
 div.sphinxsidebar a {
-    color: {{ theme_sidebarlinkcolor }};
+    color: #98dbcc;
 }
 
 div.sphinxsidebar input {
-    border: 1px solid {{ theme_sidebarlinkcolor }};
+    border: 1px solid #98dbcc;
     font-family: sans-serif;
     font-size: 1em;
 }
 
-{% if theme_collapsiblesidebar|tobool %}
-/* for collapsible sidebar */
-div#sidebarbutton {
-    background-color: {{ theme_sidebarbtncolor }};
-}
-{% endif %}
+
 
 /* -- hyperlink styles ------------------------------------------------------ */
 
 a {
-    color: {{ theme_linkcolor }};
+    color: #355f7c;
     text-decoration: none;
 }
 
 a:visited {
-    color: {{ theme_visitedlinkcolor }};
+    color: #355f7c;
     text-decoration: none;
 }
 
@@ -170,22 +131,7 @@ a:hover {
     text-decoration: underline;
 }
 
-{% if theme_externalrefs|tobool %}
-a.external {
-   text-decoration: none;
-   border-bottom: 1px dashed {{ theme_linkcolor }};
-}
 
-a.external:hover {
-   text-decoration: none;
-   border-bottom: none;
-}
-
-a.external:visited {
-    text-decoration: none;
-    border-bottom: 1px dashed {{ theme_visitedlinkcolor }};
-}
-{% endif %}
 
 /* -- body styles ----------------------------------------------------------- */
 
@@ -195,10 +141,10 @@ div.body h3,
 div.body h4,
 div.body h5,
 div.body h6 {
-    font-family: {{ theme_headfont }};
-    background-color: {{ theme_headbgcolor }};
+    font-family: 'Trebuchet MS', sans-serif;
+    background-color: #f2f2f2;
     font-weight: normal;
-    color: {{ theme_headtextcolor }};
+    color: #20435c;
     border-bottom: 1px solid #ccc;
     margin: 20px -20px 10px -20px;
     padding: 3px 0 3px 10px;
@@ -212,14 +158,14 @@ div.body h5 { font-size: 110%; }
 div.body h6 { font-size: 100%; }
 
 a.headerlink {
-    color: {{ theme_headlinkcolor }};
+    color: #c60f0f;
     font-size: 0.8em;
     padding: 0 4px 0 4px;
     text-decoration: none;
 }
 
 a.headerlink:hover {
-    background-color: {{ theme_headlinkcolor }};
+    background-color: #c60f0f;
     color: white;
 }
 
@@ -273,8 +219,8 @@ p.admonition-title:after {
 
 pre {
     padding: 5px;
-    background-color: {{ theme_codebgcolor }};
-    color: {{ theme_codetextcolor }};
+    background-color: #eeffcc;
+    color: #333333;
     line-height: 120%;
     border: 1px solid #ac9;
     border-left: none;
@@ -300,7 +246,7 @@ th {
 }
 
 .viewcode-back {
-    font-family: {{ theme_bodyfont }};
+    font-family: sans-serif;
 }
 
 div.viewcode-block:target {

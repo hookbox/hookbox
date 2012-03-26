@@ -1,115 +1,57 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        
-        <title>
-    Web/HTTP Interface
- &mdash; hookbox 0.3.4 documentation</title>
-        
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/docs.css" type="text/css" />
 
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Web/HTTP Interface &mdash; hookbox 0.3.4 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-          URL_ROOT:    '#',
-          VERSION:     '0.3.4',
-          COLLAPSE_MODINDEX: false,
-          FILE_SUFFIX: '.html'
+        URL_ROOT:    '',
+        VERSION:     '0.3.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
       };
     </script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/init.js"></script>
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="hookbox 0.3.4 documentation" href="index.html" />
-        <link rel="next" title="JSON Rest Interface" href="json_rest.html" />
-        <link rel="prev" title="Webhooks" href="webhooks.html" />
-    
+    <link rel="next" title="JSON Rest Interface" href="json_rest.html" />
+    <link rel="prev" title="Webhooks" href="webhooks.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="json_rest.html" title="JSON Rest Interface"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="webhooks.html" title="Webhooks"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">hookbox 0.3.4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
 
-    </head>
-    <body>
-        
-
-
-
-
-        <h1>hookbox 0.3.4 documentation</h1>
-
-        <div id="search">
-        Search:
-        <form class="search" action="search.html" method="get">
-          <input type="text" name="q" size="18" /> <input type="submit" value="Search" />
-          <input type="hidden" name="check_keywords" value="yes" />
-          <input type="hidden" name="area" value="default" />
-        </form>
-        </div>
-
-        <div class="versionheader">
-            Version: <span class="versionnum">0.3.4</span> Last Updated: Jan 31, 2012
-        </div>
-        <div class="clearboth"></div>
-
-        <div class="topnav">
-            <div id="pagecontrol">
-                <a href="reference/index.html">API Reference</a>
-                |
-                <a href="genindex.html">Index</a>
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
             
-                <div class="sourcelink">(<a href="_sources/web.txt">view source)</div>
-            </div>
-            
-            <div class="navbanner">
-                <a class="totoc" href="index.html">Table of Contents</a>
-                » 
-    Web/HTTP Interface
- 
-                
-                
-<div class="prevnext">
-        Previous:
-        <a href="webhooks.html" title="previous chapter">Webhooks</a>
-        Next:
-        <a href="json_rest.html" title="next chapter">JSON Rest Interface</a>
-</div>
-
-                <h2>
-                    
-    Web/HTTP Interface
- 
-                </h2>
-            </div>
-                <ul>
-<li><a class="reference internal" href="#">Web/HTTP Interface</a><ul>
-<li><a class="reference internal" href="#publish">publish</a></li>
-<li><a class="reference internal" href="#subscribe">subscribe</a></li>
-<li><a class="reference internal" href="#unsubscribe">unsubscribe</a></li>
-<li><a class="reference internal" href="#message">message</a></li>
-<li><a class="reference internal" href="#get-channel-info">get_channel_info</a></li>
-<li><a class="reference internal" href="#set-channel-options">set_channel_options</a></li>
-<li><a class="reference internal" href="#create-channel">create_channel</a></li>
-<li><a class="reference internal" href="#destroy-channel">destroy_channel</a></li>
-<li><a class="reference internal" href="#state-set-key">state_set_key</a></li>
-<li><a class="reference internal" href="#state-delete-key">state_delete_key</a></li>
-<li><a class="reference internal" href="#set-config">set_config</a></li>
-<li><a class="reference internal" href="#get-user-info">get_user_info</a></li>
-<li><a class="reference internal" href="#set-user-options">set_user_options</a></li>
-<li><a class="reference internal" href="#get-server-info">get_server_info</a></li>
-</ul>
-</li>
-</ul>
-
-            <div class="clearboth"></div>
-        </div>
-        
-        <div class="document">
-            <div class="body">
-                
-<div class="section" id="web-http-interface">
+  <div class="section" id="web-http-interface">
 <span id="web-toplevel"></span><h1>Web/HTTP Interface<a class="headerlink" href="#web-http-interface" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="publish">
 <h2>publish<a class="headerlink" href="#publish" title="Permalink to this headline">¶</a></h2>
@@ -475,34 +417,80 @@
 </div>
 </div>
 
-            </div>
+
+          </div>
         </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Web/HTTP Interface</a><ul>
+<li><a class="reference internal" href="#publish">publish</a></li>
+<li><a class="reference internal" href="#subscribe">subscribe</a></li>
+<li><a class="reference internal" href="#unsubscribe">unsubscribe</a></li>
+<li><a class="reference internal" href="#message">message</a></li>
+<li><a class="reference internal" href="#get-channel-info">get_channel_info</a></li>
+<li><a class="reference internal" href="#set-channel-options">set_channel_options</a></li>
+<li><a class="reference internal" href="#create-channel">create_channel</a></li>
+<li><a class="reference internal" href="#destroy-channel">destroy_channel</a></li>
+<li><a class="reference internal" href="#state-set-key">state_set_key</a></li>
+<li><a class="reference internal" href="#state-delete-key">state_delete_key</a></li>
+<li><a class="reference internal" href="#set-config">set_config</a></li>
+<li><a class="reference internal" href="#get-user-info">get_user_info</a></li>
+<li><a class="reference internal" href="#set-user-options">set_user_options</a></li>
+<li><a class="reference internal" href="#get-server-info">get_server_info</a></li>
+</ul>
+</li>
+</ul>
 
-        
-        
-            <div class="bottomnav">
-                
-<div class="prevnext">
-        Previous:
-        <a href="webhooks.html" title="previous chapter">Webhooks</a>
-        Next:
-        <a href="json_rest.html" title="next chapter">JSON Rest Interface</a>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="webhooks.html"
+                        title="previous chapter">Webhooks</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="json_rest.html"
+                        title="next chapter">JSON Rest Interface</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/web.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
 </div>
-
-                <div class="doc_copyright">
-                    &copy; Copyright 2010-2012, Michael Carter.
-                    Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
-                </div>
-            </div>
-        
-
-
-
-
-
-
-    </body>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="json_rest.html" title="JSON Rest Interface"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="webhooks.html" title="Webhooks"
+             >previous</a> |</li>
+        <li><a href="index.html">hookbox 0.3.4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2010-2012, Michael Carter.
+      Last updated on Feb 12, 2012.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
 </html>
-
-
-
