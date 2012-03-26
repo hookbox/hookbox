@@ -57,7 +57,7 @@ There is no returned object when calling conn.subscribe; rather, a subscription 
 .. sourcecode:: javascript
 
     var subscription = null;
-    conn.onSubscribed = function(channelName, _subscription) {
+    conn.onSubscribed = function(channelName, _subscription, args) {
       subscription = _subscription;
     }
 
@@ -95,11 +95,11 @@ Note in the above example that one of the frames in the history is ``SUBSCRIBE``
     >>> subscription.presence
     [ "mgh", "mcarter", "desmaj" ]
 
-Whenever a user subscribes or unsubscribes from the channel you will receive an ``onSubscribed`` or ``onUnsubscribed`` callback from the subscription, and the presence attribute will be updated.
+Whenever a user subscribes or unsubscribes from the channel you will receive an ``onSubscribe`` or ``onUnsubscribe`` callback from the subscription, and the presence attribute will be updated.
 
 .. sourcecode:: javascript
 
-    subscription.onSubscribed = function(frame) {
+    subscription.onSubscribe = function(frame) {
       // the user is now in our presence list
       assertTrue(subscription.presence.indexOf(frame.user) != -1);
       alert("user: " + frame.user + " has subscribed!");

@@ -1,137 +1,57 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        
-        <title>
-    Configuration
- &mdash; hookbox 0.3.4 documentation</title>
-        
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/docs.css" type="text/css" />
 
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Configuration &mdash; hookbox 0.3.4 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-          URL_ROOT:    '#',
-          VERSION:     '0.3.4',
-          COLLAPSE_MODINDEX: false,
-          FILE_SUFFIX: '.html'
+        URL_ROOT:    '',
+        VERSION:     '0.3.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
       };
     </script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/init.js"></script>
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="hookbox 0.3.4 documentation" href="index.html" />
-        <link rel="next" title="Deployment" href="deployment.html" />
-        <link rel="prev" title="JSON Rest Interface" href="json_rest.html" />
-    
+    <link rel="next" title="Deployment" href="deployment.html" />
+    <link rel="prev" title="JSON Rest Interface" href="json_rest.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="deployment.html" title="Deployment"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="json_rest.html" title="JSON Rest Interface"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">hookbox 0.3.4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
 
-    </head>
-    <body>
-        
-
-
-
-
-        <h1>hookbox 0.3.4 documentation</h1>
-
-        <div id="search">
-        Search:
-        <form class="search" action="search.html" method="get">
-          <input type="text" name="q" size="18" /> <input type="submit" value="Search" />
-          <input type="hidden" name="check_keywords" value="yes" />
-          <input type="hidden" name="area" value="default" />
-        </form>
-        </div>
-
-        <div class="versionheader">
-            Version: <span class="versionnum">0.3.4</span> Last Updated: Jan 31, 2012
-        </div>
-        <div class="clearboth"></div>
-
-        <div class="topnav">
-            <div id="pagecontrol">
-                <a href="reference/index.html">API Reference</a>
-                |
-                <a href="genindex.html">Index</a>
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
             
-                <div class="sourcelink">(<a href="_sources/configuration.txt">view source)</div>
-            </div>
-            
-            <div class="navbanner">
-                <a class="totoc" href="index.html">Table of Contents</a>
-                » 
-    Configuration
- 
-                
-                
-<div class="prevnext">
-        Previous:
-        <a href="json_rest.html" title="previous chapter">JSON Rest Interface</a>
-        Next:
-        <a href="deployment.html" title="next chapter">Deployment</a>
-</div>
-
-                <h2>
-                    
-    Configuration
- 
-                </h2>
-            </div>
-                <ul>
-<li><a class="reference internal" href="#">Configuration</a><ul>
-<li><a class="reference internal" href="#basic-options">Basic Options</a><ul>
-<li><a class="reference internal" href="#port-p-port">Port (-p, &#8211;port)</a></li>
-<li><a class="reference internal" href="#interface-i-interface">Interface (-i, &#8211;interface)</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#webhook-callback-options">Webhook Callback Options</a><ul>
-<li><a class="reference internal" href="#callback-port-cbport">Callback Port (&#8211;cbport)</a></li>
-<li><a class="reference internal" href="#callback-hostname-cbhost">Callback Hostname (&#8211;cbhost)</a></li>
-<li><a class="reference internal" href="#callback-path-prefix-cbpath">Callback Path Prefix (&#8211;cbpath)</a></li>
-<li><a class="reference internal" href="#callback-secret-token-s-webhook-secret">Callback Secret Token (-s, &#8211;webhook-secret)</a></li>
-<li><a class="reference internal" href="#callback-hookbox-version-cbsendhookboxversion">Callback Hookbox Version (&#8211;cbsendhookboxversion)</a></li>
-<li><a class="reference internal" href="#callback-via-https-cbhttps">Callback via Https (&#8211;cbhttps)</a></li>
-<li><a class="reference internal" href="#callback-add-trailing-slash-cbtrailingslash">Callback Add Trailing slash (&#8211;cbtrailingslash)</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#extended-callback-options">Extended Callback Options</a><ul>
-<li><a class="reference internal" href="#connect-callback-path-cb-connect">Connect Callback Path (&#8211;cb-connect)</a></li>
-<li><a class="reference internal" href="#disconnect-callback-path-cb-disconnect">Disconnect Callback Path (&#8211;cb-disconnect)</a></li>
-<li><a class="reference internal" href="#create-channel-callback-path-cb-create-channel">Create Channel Callback Path (&#8211;cb-create_channel)</a></li>
-<li><a class="reference internal" href="#destroy-channel-callback-path-cb-destroy-channel">Destroy Channel Callback Path (&#8211;cb-destroy_channel)</a></li>
-<li><a class="reference internal" href="#subscribe-callback-path-cb-subscribe">Subscribe Callback Path (&#8211;cb-subscribe)</a></li>
-<li><a class="reference internal" href="#unsubscribe-callback-path-cb-unsubscribe">Unsubscribe Callback Path (&#8211;cb-unsubscribe)</a></li>
-<li><a class="reference internal" href="#publish-callback-path-cb-publish">Publish Callback Path (&#8211;cb-publish)</a></li>
-<li><a class="reference internal" href="#cookie-identifier-c-cookie-identifier">Cookie Identifier (-c, &#8211;cookie-identifier)</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#api-options">API Options</a><ul>
-<li><a class="reference internal" href="#web-api-port-w-web-api-port">Web API Port (-w, &#8211;web-api-port)</a></li>
-<li><a class="reference internal" href="#web-api-interface-w-web-api-interface">Web API Interface (-W, &#8211;web-api-interface)</a></li>
-<li><a class="reference internal" href="#api-secret-r-api-security-token">API Secret (-r, &#8211;api-security-token)</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#admin-options">Admin Options</a><ul>
-<li><a class="reference internal" href="#admin-password-a-admin-password">Admin Password (-a, &#8211;admin-password)</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-
-            <div class="clearboth"></div>
-        </div>
-        
-        <div class="document">
-            <div class="body">
-                
-<div class="section" id="configuration">
+  <div class="section" id="configuration">
 <h1>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h1>
 <p>As of version 0.2, hookbox is completely configurable via command line options. While developing your application, you will want to create a startup script that contains all of the appropriate settings.</p>
 <p>A typical hookbox start command looks like this:</p>
@@ -239,34 +159,102 @@
 </div>
 </div>
 
-            </div>
+
+          </div>
         </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Configuration</a><ul>
+<li><a class="reference internal" href="#basic-options">Basic Options</a><ul>
+<li><a class="reference internal" href="#port-p-port">Port (-p, &#8211;port)</a></li>
+<li><a class="reference internal" href="#interface-i-interface">Interface (-i, &#8211;interface)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#webhook-callback-options">Webhook Callback Options</a><ul>
+<li><a class="reference internal" href="#callback-port-cbport">Callback Port (&#8211;cbport)</a></li>
+<li><a class="reference internal" href="#callback-hostname-cbhost">Callback Hostname (&#8211;cbhost)</a></li>
+<li><a class="reference internal" href="#callback-path-prefix-cbpath">Callback Path Prefix (&#8211;cbpath)</a></li>
+<li><a class="reference internal" href="#callback-secret-token-s-webhook-secret">Callback Secret Token (-s, &#8211;webhook-secret)</a></li>
+<li><a class="reference internal" href="#callback-hookbox-version-cbsendhookboxversion">Callback Hookbox Version (&#8211;cbsendhookboxversion)</a></li>
+<li><a class="reference internal" href="#callback-via-https-cbhttps">Callback via Https (&#8211;cbhttps)</a></li>
+<li><a class="reference internal" href="#callback-add-trailing-slash-cbtrailingslash">Callback Add Trailing slash (&#8211;cbtrailingslash)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#extended-callback-options">Extended Callback Options</a><ul>
+<li><a class="reference internal" href="#connect-callback-path-cb-connect">Connect Callback Path (&#8211;cb-connect)</a></li>
+<li><a class="reference internal" href="#disconnect-callback-path-cb-disconnect">Disconnect Callback Path (&#8211;cb-disconnect)</a></li>
+<li><a class="reference internal" href="#create-channel-callback-path-cb-create-channel">Create Channel Callback Path (&#8211;cb-create_channel)</a></li>
+<li><a class="reference internal" href="#destroy-channel-callback-path-cb-destroy-channel">Destroy Channel Callback Path (&#8211;cb-destroy_channel)</a></li>
+<li><a class="reference internal" href="#subscribe-callback-path-cb-subscribe">Subscribe Callback Path (&#8211;cb-subscribe)</a></li>
+<li><a class="reference internal" href="#unsubscribe-callback-path-cb-unsubscribe">Unsubscribe Callback Path (&#8211;cb-unsubscribe)</a></li>
+<li><a class="reference internal" href="#publish-callback-path-cb-publish">Publish Callback Path (&#8211;cb-publish)</a></li>
+<li><a class="reference internal" href="#cookie-identifier-c-cookie-identifier">Cookie Identifier (-c, &#8211;cookie-identifier)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#api-options">API Options</a><ul>
+<li><a class="reference internal" href="#web-api-port-w-web-api-port">Web API Port (-w, &#8211;web-api-port)</a></li>
+<li><a class="reference internal" href="#web-api-interface-w-web-api-interface">Web API Interface (-W, &#8211;web-api-interface)</a></li>
+<li><a class="reference internal" href="#api-secret-r-api-security-token">API Secret (-r, &#8211;api-security-token)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#admin-options">Admin Options</a><ul>
+<li><a class="reference internal" href="#admin-password-a-admin-password">Admin Password (-a, &#8211;admin-password)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
 
-        
-        
-            <div class="bottomnav">
-                
-<div class="prevnext">
-        Previous:
-        <a href="json_rest.html" title="previous chapter">JSON Rest Interface</a>
-        Next:
-        <a href="deployment.html" title="next chapter">Deployment</a>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="json_rest.html"
+                        title="previous chapter">JSON Rest Interface</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="deployment.html"
+                        title="next chapter">Deployment</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/configuration.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
 </div>
-
-                <div class="doc_copyright">
-                    &copy; Copyright 2010-2012, Michael Carter.
-                    Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
-                </div>
-            </div>
-        
-
-
-
-
-
-
-    </body>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="deployment.html" title="Deployment"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="json_rest.html" title="JSON Rest Interface"
+             >previous</a> |</li>
+        <li><a href="index.html">hookbox 0.3.4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2010-2012, Michael Carter.
+      Last updated on Feb 12, 2012.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.2.
+    </div>
+  </body>
 </html>
-
-
-

@@ -109,7 +109,7 @@ HookBoxProtocol = Class([RTJPProtocol], function(supr) {
 	this.onClose = function(err, wasConnected) { }
 	this.onConnectionLost = function(reason) { }
 	this.onError = function(args) { }
-	this.onSubscribed = function(name, subscription) { }
+	this.onSubscribed = function(name, subscription, args) { }
 	this.onUnsubscribed = function(subscription, args) { }
 	this.onMessaged = function(args) {}
 	this.init = function(url, connectPayload, cookieString) {
@@ -205,7 +205,7 @@ HookBoxProtocol = Class([RTJPProtocol], function(supr) {
 							channel_name: fArgs.channel_name
 						});
 					});
-					this.onSubscribed(fArgs.channel_name, s);
+					this.onSubscribed(fArgs.channel_name, s, fArgs);
 					K = s;
 				}
 				else {
