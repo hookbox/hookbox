@@ -222,10 +222,6 @@ class Channel(object):
                 initial_data = options['initial_data']
             self.server.maybe_auto_subscribe(user, options, conn=conn)
             
-        if has_initial_data or self.history:
-            frame = dict(channel_name=self.name, history=self.history, initial_data=initial_data)
-            user.send_frame('CHANNEL_INIT', frame, channel=self)
-
         self.subscribers.append(user)
         user.channel_subscribed(self, conn=conn)
         _now = get_now()
@@ -315,6 +311,8 @@ class Channel(object):
         frame["history_size"] = self.history_size
         frame["history_duration"] = self.history_duration
         frame["state"] = self.state
+        if initial_data:
+            frame["initial_data"] = initial_data
         if self.presenceful:
             frame['presence'] = [ subscriber.get_name() for subscriber in self.subscribers ]
         else:
