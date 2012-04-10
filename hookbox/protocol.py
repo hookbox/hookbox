@@ -29,10 +29,8 @@ class HookboxConn(object):
     def send_frame(self, *args, **kw):
         try:
             self._rtjp_conn.send_frame(*args, **kw).wait()
+
         except Exception, e:
-            ## Adding for debug purposes
-            # self.user.add_frame_error(self, *args, **kw)
-            
             if 'closed' in str(e).lower() or 'not connected' in str(e).lower():
                 pass
             else:
@@ -66,22 +64,26 @@ class HookboxConn(object):
     def run(self):
         while True:
             try:
-#                print 'read a frame...'
-#                self.logger.debug('%s waiting for a frame', self)
-                fid, fname, fargs= self._rtjp_conn.recv_frame().wait()
-#                print 'got frame', fid, fname, fargs
+                result = self._rtjp_conn.recv_frame().wait()
+
+                if isinstance(result, rtjp_eventlet.errors.ConnectionLost):
+                    self.logger.debug('received connection lost message')
+                    break
+
+                fid, fname, fargs = result
+
             except rtjp_eventlet.errors.ConnectionLost, e:
-                self.logger.debug('received connection lost error')
-#                print 'connection lost'
+                self.logger.info('received connection lost exception')
                 break
+
             except:
-#                print 'some error..'
                 self.logger.warn("Error reading frame", exc_info=True)
                 continue
+
             f = getattr(self, 'frame_' + fname, None)
             if f:
                 try:
-                        f(fid, fargs)
+                    f(fid, fargs)
                 except ExpectedException, e:
                     self.send_error(fid, e)
                 except Exception, e:
@@ -89,12 +91,11 @@ class HookboxConn(object):
                     self.send_error(fid, e)
             else:
                 self._default_frame(fid, fname, fargs)
-#        print 'all DONE!'
+
         # cleanup
         self.logger.debug('loop done')
         if self.user:
             self.logger.debug('cleanup user')
-#            print 'go call remove connection'
             self.user.remove_connection(self)
             self.server.disconnect(self)
         
