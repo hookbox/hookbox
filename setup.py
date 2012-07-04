@@ -55,13 +55,13 @@ def find_package_data():
 
 def main():
     setup(
-        name='hookbox',
+        name='hookbox-dax',
         version=hookbox.__version__,
-        author='Michael Carter',
-        author_email='CarterMichael@gmail.com',
+        author='Michael Carter, Dax Reyes',
+        author_email='raikage@gmail.com',
         maintainer='Dax Reyes',
         maintainer_email='raikage@gmail.com',
-        url='https://github.com/hookbox/hookbox',
+        url='https://github.com/raikage/hookbox',
         license='MIT License',
         description='HookBox is a Comet server and message queue that tightly integrates with your existing web application via web hooks and a REST interface.',
         long_description='',
