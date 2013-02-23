@@ -12,9 +12,6 @@ from paste import urlmap, urlparser
 eventlet.monkey_patch(all=False, socket=True, select=True)
 
 from restkit import Resource
-from restkit.globals import set_manager
-from restkit.manager.meventlet import EventletManager
-
 
 import eventlet.wsgi
 import eventlet.websocket
@@ -78,7 +75,6 @@ class HookboxServer(object):
         self.conns = {}
         self.users = {}
 
-        set_manager(EventletManager(timeout=300, max_conn=300))
         self.user_channel_presence = {}
         self._http = None
         self._url = None

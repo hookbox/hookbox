@@ -1,3 +1,9 @@
+# To build locally: python setup.py egg_info -RDb "" bdist_egg 
+# To release: python setup.py egg_info -RD sdist bdist_egg register upload
+# To create a named release: python setup.py egg_info -RDb "a1" sdist bdist_egg register upload
+# To release a dev build: python setup.py egg_info -rD sdist bdist_egg register upload
+# See http://peak.telecommunity.com/DevCenter/setuptools#release-tagging-options for more information.
+
 from setuptools import setup, find_packages
 import os, sys
 import hookbox
@@ -25,8 +31,8 @@ _install_requires = [
     'csp_eventlet>=0.5.1', 
     'rtjp_eventlet>=0.3.2', 
     'pygments',
-    'restkit>=3.2.3,<4.0.0',
-    'event-agora',
+    'restkit==4.1.3',
+    'event==0.4.2',
 #    'nose==0.11.1',
 #    'coverage',
 ]
@@ -49,11 +55,13 @@ def find_package_data():
 
 def main():
     setup(
-        name='hookbox',
+        name='hookbox-dax',
         version=hookbox.__version__,
-        author='Michael Carter',
-        author_email='CarterMichael@gmail.com',
-        url='http://hookbox.org',
+        author='Michael Carter, Dax Reyes',
+        author_email='raikage@gmail.com',
+        maintainer='Dax Reyes',
+        maintainer_email='raikage@gmail.com',
+        url='https://github.com/raikage/hookbox',
         license='MIT License',
         description='HookBox is a Comet server and message queue that tightly integrates with your existing web application via web hooks and a REST interface.',
         long_description='',
