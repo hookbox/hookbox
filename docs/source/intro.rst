@@ -63,7 +63,7 @@ Putting it all together, our actual implementation would consist of just a few p
 4. A publish callback which returns ``[false, {}]`` so that users cannot publish to the channel
 5. an html with javascript that connects to hookbox, graphs the initial history, and graphs all new data points as they come in.
 
-If you're interested in seeing a completed version of this type of application then take a look at the `PHP Real-time Time Series Graph <http://github.com/mcarter/hookbox/tree/master/examples/php_graph>`_ on github.
+If you're interested in seeing a completed version of this type of application then take a look at the `PHP Real-time Time Series Graph <http://github.com/hookbox/hookbox/tree/master/examples/php_graph>`_ on github.
 
 Chat Room (with presence)
 -------------------------
@@ -134,7 +134,7 @@ Github
 
 The development version of Hookbox is located on github:
 
-* http://github.com/mcarter/hookbox
+* http://github.com/hookbox/hookbox
 
 You can get a copy of the latest source by cloning the repository:
 
