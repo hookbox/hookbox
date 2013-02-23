@@ -140,7 +140,7 @@ You can get a copy of the latest source by cloning the repository:
 
 .. sourcecode:: none
 
-    # git clone git://github.com/mcarter/hookbox.git
+    # git clone git://github.com/hookbox/hookbox.git
 
 
 To install hookbox from source, ensure you have python and setuptools, then run:
